@@ -11,7 +11,7 @@ Use the Topics button or press **T** to jump to a topic. The numbered files belo
 | 03 | [Terraform deployment automation](03.html) | PR planning, approved apply, testing and environment promotion |
 | 04 | [GitOps standardization](04.html) | Shared release rules, target configuration, deployment and promotion |
 | 05 | [Observability and alerting](05.html) | Signal coverage, ITIL-aligned incident response, recovery and continual improvement |
-| 06 | [Microsoft Entra ID and privileged access](06.html) | GitHub and Google Cloud identity, normal permissions, PAM and access lifecycle |
+| 06 | [Microsoft Entra ID and privileged access](06.html) | Proposed team structure, Entra groups, GitHub / Google IAM roles, PAM and access lifecycle |
 | 07 | [Documentation](07.html) | Current locations, DevOps home, guide ownership, review and maintenance |
 | 08 | [Security](08.html) | Device and platform coverage, CrowdStrike, MOXFIVE/At-Bay roles, baseline, validation and rollout |
 
@@ -43,4 +43,4 @@ The 14-slide deck includes a proposed impact/urgency matrix, incident records an
 
 ## Combined presentation
 
-98 slides, including an opening slide, a topic menu and the eight topic sections. Links in the menu jump to each topic. The same keyboard controls and animations work throughout. No external files or network connection are needed.
+100 slides, including an opening slide, a topic menu and the eight topic sections. Links in the menu jump to each topic. The same keyboard controls and animations work throughout. No external files or network connection are needed.

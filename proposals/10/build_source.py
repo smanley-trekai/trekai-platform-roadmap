@@ -8,7 +8,7 @@ import xml.etree.ElementTree as E
 
 P=Path(__file__).parent; NS='http://www.w3.org/2000/svg'
 E.register_namespace('',NS)
-svg=E.Element(f'{{{NS}}}svg',{'width':'11600','height':'32600'})
+svg=E.Element(f'{{{NS}}}svg',{'width':'12300','height':'32600'})
 colors={'context':('#ddddd8','#a8a8a0','#434339'),
         'proposal':('#a0c4fb','#6a8bbf','#14315e'),
         'decision':('#ffe86d','#cbb333','#574900')}
@@ -44,14 +44,14 @@ f=frame('p10a',-2560,'10A Role-based access and PAM: baseline plus temporary ele
         'CTO / developers / QA / DevOps / access owners | Draft | Give each job an agreed baseline and make additional privileged access scoped, eligible and time-bound.')
 text(f,'a-current',64,244,880,'Inputs and the requested change',bold=True)
 card(f,'a-team-model',64,320,880,192,
-     '<b>Agree team structure and normal job needs</b><br>Identify application, QA, DevOps and other staff tasks.<br>Define the normal roles and resource/repository scope.<br>Use the identity and mapping models from 08 and 09.','context')
+     '<b>Define teams before access mappings (see <a href="https://miro.com/app/board/uXjVEOGaQYU=/?moveToWidget=3458764691419502937">10D</a>)</b><br>App developers build products; DevOps builds environments.<br>QA tests releases; leads/managers/directors provide oversight.<br>Agree tasks, product boundaries and technical role assignments.','context')
 card(f,'a-inventory',64,552,880,192,
      '<b>Inventory standing access and existing controls</b><br>Review direct/group/inherited grants and current elevation tools.<br>Identify tasks that need temporary additional privileges.<br>Current entitlements, configuration and coverage remain to verify.','context')
 card(f,'a-intent',64,784,880,224,
      '<b>Request temporary access for an explicit task</b><br>The Nov 12 discussion separates default access from elevation.<br>Read versus write was an example, not a universal role policy.<br>Agree the smallest useful privilege scope and its owner.','decision')
 text(f,'a-proposed',1104,244,1984,'Proposed: maintained baseline and a separate temporary-access path',bold=True)
 team=card(f,'a-team',1104,320,576,192,
-     '<b>Agreed team / job role</b><br>Required day-to-day tasks.<br>Target product and environment.<br>Named role and access owners.')
+     '<b>Agreed team / task role</b><br>Required work, product and environment.<br>Assign technical duties explicitly.<br>Title alone grants no admin access.')
 group=card(f,'a-group',1808,320,576,192,
      '<b>Approved membership / mapping</b><br>Owned identity group and target mapping.<br>Joiner/mover/leaver approvals.<br>Eligibility is separately defined.')
 baseline=card(f,'a-baseline',2512,320,576,192,
@@ -139,8 +139,8 @@ f=frame('p10c',5110,'10C Role-based access and PAM: delivery plan and validation
 text(f,'c-work',64,244,3024,'Proposed work packages',bold=True)
 phases=[]
 for key,x,title,body,owner in [
- ('c-needs',64,'1. Agree baseline and elevated tasks',
-  'Map jobs/groups to normal target access.<br>Identify tasks needing extra temporary privilege.<br>Review direct, inherited and overlapping grants.<br>Use 08/09 identity and mapping requirements.',
+ ('c-needs',64,'1. Define teams and access needs',
+  'Use <a href="https://miro.com/app/board/uXjVEOGaQYU=/?moveToWidget=3458764691419502937">10D</a> to agree teams and leadership duties.<br>Map tasks, products and environments.<br>Inventory standing and overlapping grants.<br>Define baseline and elevation eligibility.',
   'Team leads + identity + target owners'),
  ('c-design',860,'2. Design a target-specific catalog',
   'Define purpose, roles, scope and eligible identities.<br>Agree approval, justification and duration policy.<br>Assign owners, audit and removal requirements.<br>Choose a supported mechanism for each target.',
@@ -161,18 +161,21 @@ for key,x,y,title in [('proof',64,744,'Acceptance evidence before expansion'),('
 card(f,'c-proof',64,824,1432,224,
      '• Baseline works; elevated operations are denied before activation.<br>• Ineligible, pending and declined requests do not gain privilege.<br>• Active grants permit only the agreed target operation/scope.<br>• Expiry/revocation removes elevation; valid baseline remains.<br>• Delays, remaining access, audit and failed-removal escalation are tested.','context')
 card(f,'c-dependencies',1656,824,1432,224,
-     '• Agreed team/job baseline and identity mappings from 08/09.<br>• Target roles, resource/repository scope and effective-access inventory.<br>• Supported elevation service, licensing/integration and owners.<br>• Requester/approver test identities and an approved pilot scope.<br>• Audit/alerts from 07 and owned catalog/runbooks through 06.','context')
+     '• Team/task structure and product boundaries from <a href="https://miro.com/app/board/uXjVEOGaQYU=/?moveToWidget=3458764691419502937">10D</a>.<br>• Approved Entra groups and target mappings from 08/09.<br>• Scoped roles, baseline and separate elevation eligibility.<br>• Supported target mechanism, accountable owners and pilot.<br>• Audit from 07 and maintained access catalog through 06.','context')
 card(f,'c-controls',64,1200,1432,224,
      '• Explicit administrators, eligible requesters, approvers and owners.<br>• Reviewed role/scope changes, justification and bounded duration.<br>• Verified activation/removal, audit trail and exception ownership.<br>• Emergency/recovery access and overdue-removal response.<br>• Recurring eligibility, overlapping-grant and standing-access review.','decision')
 card(f,'c-decisions',1656,1200,1432,224,
-     '• Which baseline/elevated tasks, roles and target scopes come first?<br>• Google Cloud PAM scope; any separately supported GitHub mechanism?<br>• Who is eligible, who approves, and what duration/reason is required?<br>• How are early ending, propagation/sessions and emergencies handled?<br>• Who owns removal failures, audit retention and recurring review?','decision')
+     '• Agree app development, DevOps, QA and leadership duties.<br>• Which product/environment scopes and baseline roles?<br>• Who owns groups, mappings, eligibility and approvals?<br>• Which target mechanisms, duration and emergency rules?<br>• Who verifies removal and maintains the access catalog?','decision')
 card(f,'c-boundaries',64,1504,3024,160,
      '<b>Elevation grants access; the task still follows its normal change and execution controls</b><br>Use <a href="https://docs.cloud.google.com/iam/docs/pam-request-temporary-elevated-access">Google PAM grant lifecycle guidance</a> for the chosen cloud implementation. Prove target activation/removal; group-based downstream access must meet the required timing and scope.<br>Coordinate 08/09 identity decisions, 01 execution controls and 06/07 documentation/audit operations. Exact roles, target mechanisms, duration, approvals and rollout sequence remain decisions.','context')
 text(f,'c-evidence',64,1810,3024,
      'Basis: Nov 12 discussion (07:43–10:37) and official Google/Microsoft references checked Nov 16, 2026. This is a proposed model; no entitlement, permission or group configuration is changed.',18)
 
+from team_structure import append_team_frame
+append_team_frame(svg)
+
 ids={e.get('id'):e for e in svg.iter() if e.get('id')}
-assert len(ids)==sum(bool(e.get('id')) for e in svg.iter()) and len(svg)==3
+assert len(ids)==sum(bool(e.get('id')) for e in svg.iter()) and len(svg)==4
 for f in svg:
  for e in f:
   if e.get('data-start'):
@@ -184,5 +187,5 @@ for f in svg:
 assert not any(e.tag.endswith(('image','foreignObject')) for e in svg.iter())
 E.indent(svg)
 E.ElementTree(svg).write(P/'proposal-10.canvas.svg',encoding='utf-8',xml_declaration=True)
-print(f'Built 3 frames and {len(ids)} native widgets; bounds and connector references checked.')
+print(f'Built 4 frames and {len(ids)} native widgets; bounds and connector references checked.')
 

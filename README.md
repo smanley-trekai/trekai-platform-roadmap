@@ -6,7 +6,7 @@ These materials support team review and planning. A diagram or completed present
 
 ## Start here
 
-- Open [the combined presentation](presentation/index.html) in a browser. It contains 98 slides across eight topics and works offline without installation.
+- Open [the combined presentation](presentation/index.html) in a browser. It contains 100 slides across eight topics and works offline without installation.
 - Read [presentation instructions](presentation/README.md) for individual topic decks and keyboard controls. Use **T** to open the topic menu, **Space** or **Right Arrow** to reveal points, and **F** for fullscreen.
 - View [the Miro diagrams](https://miro.com/welcomeonboard/ZUkwd3ZSaXRHa2NnYlE5ZGlWUXdPdHNMa01hNE1NSjRLSm5ON0ZLRFo4TnlicDNLcytGejErTkEyYkNubnhkdCtOc3dzeStGSDB3Q3dBQ1prODhJMU8vYjQ2OVlTT3ZCSTB6SDJobDBVYXNvTVpPSEk3OHMvSkViTHd4RUczQ2lBd044SHFHaVlWYWk0d3NxeHNmeG9BPT0hdjE=?share_link_id=794227503994) using the supplied sharing link. The [direct board link](https://miro.com/app/board/uXjVEOGaQYU=/) and individual frame links in [progress.md](progress.md) provide navigation for accounts with access.
 - Review [the diagram design plan](diagram-design-plan.md) for proposal scope and visual conventions, and [the progress log](progress.md) for dated changes, verification and open questions. Later entries may supersede earlier status notes.
@@ -36,7 +36,7 @@ The presentation groups twelve proposals into eight topics. presentation topic n
 | 03 Terraform deployment automation | `01` Terraform review and controlled execution |
 | 04 GitOps standardization | `11` GitOps / SDLC |
 | 05 Observability and alerting | `07` Observability and alerting |
-| 06 Microsoft Entra ID and privileged access | `08` Google Cloud identity, `09` GitHub identity, `10` PAM and role-based access |
+| 06 Microsoft Entra ID and privileged access | `08` Google Cloud identity, `09` GitHub identity, `10` team structure, PAM and role-based access |
 | 07 Documentation | `06` Documentation / knowledge base |
 | 08 Security | `12` Security coverage and implementation |
 
