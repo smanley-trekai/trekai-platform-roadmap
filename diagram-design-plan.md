@@ -42,6 +42,8 @@ Proposal 12 was added at the user's request on 2026-11-23 following research in 
 
 The AI brain was mentioned in the transcript but is absent from the supplied proposal list. Keep it as a supplementary scope item, separate from the eleven proposals above, until its inclusion and content are clarified.
 
+On 2026-11-24, the user requested a presentation-menu link to the separately supplied AI guide roadmap. Topic 09 links to `ai-guide-roadmap/visuals/ai-agents-team-presentation.html`; it does not add slides to the combined deck or expand the confirmed Miro proposal scope. This learning resource is distinct from the unconfirmed AI-brain scope item.
+
 ## 2. Organize the diagram set
 
 Use one Miro scratchpad board initially, with a repeatable group of frames for each topic. Split topics into separate boards if navigation becomes difficult; both arrangements were acceptable in the meeting.

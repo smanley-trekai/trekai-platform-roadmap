@@ -1,6 +1,6 @@
 # TrekAI presentations
 
-Open [the combined presentation](index.html) in a browser. It contains all eight topics in one self-contained HTML file, works offline and requires no installation.
+Open [the combined presentation](index.html) in a browser. It contains eight platform topics in one self-contained HTML file, works offline and requires no installation. Its topic menu also links to the separate AI guide roadmap presentation.
 
 Use the Topics button or press **T** to jump to a topic. The numbered files below remain available as editable topic copies.
 
@@ -14,8 +14,9 @@ Use the Topics button or press **T** to jump to a topic. The numbered files belo
 | 06 | [Microsoft Entra ID and privileged access](06.html) | Proposed team structure, Entra groups, GitHub / Google IAM roles, PAM and access lifecycle |
 | 07 | [Documentation](07.html) | Current locations, DevOps home, guide ownership, review and maintenance |
 | 08 | [Security](08.html) | Device and platform coverage, CrowdStrike, MOXFIVE/At-Bay roles, baseline, validation and rollout |
+| 09 | [AI guide roadmap](../ai-guide-roadmap/visuals/ai-agents-team-presentation.html) | Separate team presentation about using AI agents in software development and DevOps |
 
-Each topic explains the current setup, the proposed setup and how we get there. All decks follow the approved 16:9 slide style with point-by-point animation. The approved Terraform content now appears as topic 03.
+Each of the eight platform topics explains the current setup, the proposed setup and how we get there. These platform decks follow the approved 16:9 slide style with point-by-point animation. Topic 09 opens the existing AI guide roadmap presentation in a new tab, using that presentation’s own style and controls. The approved Terraform content now appears as topic 03.
 
 Naming follows the existing product groupings: **Trek Learning = Hub/LMS**. **TrekCAP is the adaptive engine used with TrekFinder**.
 
@@ -43,4 +44,4 @@ The 14-slide deck includes a proposed impact/urgency matrix, incident records an
 
 ## Combined presentation
 
-100 slides, including an opening slide, a topic menu and the eight topic sections. Links in the menu jump to each topic. The same keyboard controls and animations work throughout. No external files or network connection are needed.
+100 slides, including an opening slide, a topic menu and the eight platform topic sections. The first eight menu links jump within this deck; topic 09 opens `../ai-guide-roadmap/visuals/ai-agents-team-presentation.html` in a new tab. The combined deck remains self-contained. The AI guide roadmap link requires the sibling `ai-guide-roadmap/` folder to remain alongside `presentation/`.
