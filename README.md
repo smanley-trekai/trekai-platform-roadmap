@@ -18,7 +18,7 @@ These materials support team review and planning. A diagram or completed present
 | `presentation/index.html` | Combined, self-contained HTML presentation. |
 | `presentation/01.html` through `08.html` | Editable topic copies of the presentation. |
 | `presentation/archive/` | Preserved earlier presentation versions. |
-| `ai-guide-roadmap/` | AI-agent learning material and the separately linked team presentation. |
+| [ai-guide-roadmap/](ai-guide-roadmap/) | Resources for working with AI agents in software development and DevOps. Start with the [learning roadmap](ai-guide-roadmap/visuals/ai-agents-learning-roadmap.html) for an introduction or use the [engineering field guide](ai-guide-roadmap/visuals/professional-it-agent-guide.html) to work through a ticket. |
 | `proposals/01/` through `12/` | Native Miro diagram sources, Python builders, live snapshots, verification exports and operation records. |
 | [diagram-design-plan.md](diagram-design-plan.md) | Diagram structure, audience needs, workflow conventions and proposal scope. |
 | [progress.md](progress.md) | Historical progress, frame links, evidence, verification and follow-up work. |
