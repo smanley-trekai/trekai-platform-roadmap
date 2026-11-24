@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg">
+  <g id="m3458764690359619683" data-miro-id="3458764690359619683" data-frame="01B  Terraform change review: workflow" transform="translate(1275,2)">
+    <rect data-type="frame" x="0" y="0" width="2292" height="1910" fill="#ffffff" data-title="01B  Terraform change review: workflow" />
+    <textArea id="m3458764690359619719" data-miro-id="3458764690359619719">Developer / reviewers / DevOps | Proposed | Core workflow for one target; see 01D for promotion and 01E for validation.</textArea>
+    <rect id="m3458764690359619735" data-miro-id="3458764690359619735" data-content="6. Merge to main&lt;br&gt;Promotion: see &lt;a href=&quot;https://miro.com/app/board/uXjVEOGaQYU=/?moveToWidget=3458764690575950778&quot;&gt;01D&lt;/a&gt;" />
+    <rect id="m3458764690359619737" data-miro-id="3458764690359619737" data-content="10. Verify outcome&lt;br&gt;Return status&lt;br&gt;Checks: see &lt;a href=&quot;https://miro.com/app/board/uXjVEOGaQYU=/?moveToWidget=3458764690575950779&quot;&gt;01E&lt;/a&gt;" />
+    <textArea id="workflow-detail-links" x="68" y="1680" width="2156" height="54" fill="#595959" font-family="noto_sans" font-size="19" text-align="left">Supporting detail views: <a href="https://miro.com/app/board/uXjVEOGaQYU=/?moveToWidget=3458764690575950778">01D: repeat this workflow across environments</a>
+      <br />
+      <a href="https://miro.com/app/board/uXjVEOGaQYU=/?moveToWidget=3458764690575950779">01E: before-apply checks and step 10 acceptance tests</a>
+    </textArea>
+  </g>
+  <g id="m3458764690575950778" data-miro-id="3458764690575950778" data-frame="01D Terraform: branches and promotion" transform="translate(-1017,2780)">
+    <rect data-type="frame" x="0" y="0" width="3152" height="1910" fill="#ffffff" data-title="01D Terraform: branches and promotion" />
+    <textArea id="m3458764690575950791" data-miro-id="3458764690575950791">Supporting view for <a href="https://miro.com/app/board/uXjVEOGaQYU=/?moveToWidget=3458764690359619683">01B</a> | Draft recommendation | Shows how its core workflow repeats across dev, staging and production.</textArea>
+    <textArea id="m3458764690575950797" data-miro-id="3458764690575950797">01D expands 01B across environments; each process box names the corresponding 01B steps</textArea>
+    <rect id="m3458764690575950798" data-miro-id="3458764690575950798" data-content="&lt;b&gt;1. Review the PR&lt;/b&gt;&lt;br&gt;Checks and preview plans.&lt;br&gt;Review code and target impact.&lt;br&gt;&lt;b&gt;01B: steps 1–5&lt;/b&gt;" />
+    <rect id="m3458764690575950799" data-miro-id="3458764690575950799" data-content="&lt;b&gt;2. Merge to main&lt;/b&gt;&lt;br&gt;Record the exact revision.&lt;br&gt;Production does not run&lt;br&gt;just because code merged.&lt;br&gt;&lt;b&gt;01B: step 6&lt;/b&gt;" />
+    <rect id="m3458764690575950800" data-miro-id="3458764690575950800" data-content="&lt;b&gt;3. Apply to dev&lt;/b&gt;&lt;br&gt;Generate the final dev plan.&lt;br&gt;Authorize under dev policy.&lt;br&gt;Actions applies that plan.&lt;br&gt;&lt;b&gt;01B: steps 7–9 for dev&lt;/b&gt;" />
+    <rect id="m3458764690575950801" data-miro-id="3458764690575950801" data-content="&lt;b&gt;4. Verify dev&lt;/b&gt;&lt;br&gt;Check settings and acceptance.&lt;br&gt;Record results before promotion.&lt;br&gt;&lt;b&gt;01B: step 10&lt;/b&gt;&lt;br&gt;Test examples: &lt;a href=&quot;https://miro.com/app/board/uXjVEOGaQYU=/?moveToWidget=3458764690575950779&quot;&gt;01E&lt;/a&gt;" />
+    <rect id="m3458764690575950802" data-miro-id="3458764690575950802" data-content="&lt;b&gt;5. Promote to staging&lt;/b&gt;&lt;br&gt;Select the tested version.&lt;br&gt;Own plan, approval and apply.&lt;br&gt;Verify staging requirements.&lt;br&gt;&lt;b&gt;Repeat 01B steps 7–10&lt;/b&gt;" />
+    <rect id="m3458764690575950803" data-miro-id="3458764690575950803" data-content="&lt;b&gt;6. Promote to production&lt;/b&gt;&lt;br&gt;Select the tested version.&lt;br&gt;Own plan, approval and apply.&lt;br&gt;Verify production requirements.&lt;br&gt;&lt;b&gt;Repeat 01B steps 7–10&lt;/b&gt;" />
+    <rect id="m3458764690575950805" data-miro-id="3458764690575950805" data-content="&lt;b&gt;Required tests fail: stop promotion&lt;/b&gt;&lt;br&gt;01B step 10 supplies the acceptance evidence; failed required tests stop the next environment.&lt;br&gt;Correct the change and repeat review, planning and authorization as needed." />
+  </g>
+  <g id="m3458764690575950779" data-miro-id="3458764690575950779" data-frame="01E Terraform: verify the requirements" transform="translate(2818,2780)">
+    <rect data-type="frame" x="0" y="0" width="3152" height="1910" fill="#ffffff" data-title="01E Terraform: verify the requirements" />
+    <textArea id="m3458764690575950817" data-miro-id="3458764690575950817">Supporting view for <a href="https://miro.com/app/board/uXjVEOGaQYU=/?moveToWidget=3458764690359619683">01B</a> | Draft | Explains checks before apply and the requirement tests within step 10, Verify outcome.</textArea>
+    <textArea id="m3458764690575950819" data-miro-id="3458764690575950819">01E expands 01B validation: agree criteria first, inspect planned changes, then test the actual environment</textArea>
+    <rect id="m3458764690575950820" data-miro-id="3458764690575950820" data-content="&lt;b&gt;Requirement / acceptance criteria&lt;/b&gt;&lt;br&gt;Agree these before starting 01B." />
+    <rect id="m3458764690575950821" data-miro-id="3458764690575950821" data-content="&lt;b&gt;Before apply: planned configuration&lt;/b&gt;&lt;br&gt;01B steps 2–8: checks, plans, review and authorization." />
+    <rect id="m3458764690575950822" data-miro-id="3458764690575950822" data-content="&lt;b&gt;After apply: deployed behavior&lt;/b&gt;&lt;br&gt;01B step 10: verify outcome and return status." />
+    <rect id="m3458764690575950837" data-miro-id="3458764690575950837" data-content="&lt;b&gt;01B checks and plan: before apply&lt;/b&gt;&lt;br&gt;terraform validate checks syntax and consistency.&lt;br&gt;Plan review checks intended changes and replacements.&lt;br&gt;These feed review and approval in 01B steps 2–8." />
+    <rect id="m3458764690575950838" data-miro-id="3458764690575950838" data-content="&lt;b&gt;01B step 10: acceptance before promotion&lt;/b&gt;&lt;br&gt;Verify requirements and record the deployment evidence.&lt;br&gt;Successful apply alone does not establish acceptance.&lt;br&gt;Required tests must pass before the next stage in &lt;a href=&quot;https://miro.com/app/board/uXjVEOGaQYU=/?moveToWidget=3458764690575950778&quot;&gt;01D&lt;/a&gt;." />
+  </g>
+</svg>

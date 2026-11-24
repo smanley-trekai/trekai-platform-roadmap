@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="TrekAI proposal 02: current DevOps repositories, the proposed monorepo, tradeoffs and migration plan.">
+<title>02 — DevOps monorepo</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#17283d;background:#20242a;color-scheme:light;--blue:#20569c;--navy:#153452;--gray:#526171;--line:#d4dce5;--light:#edf3fa;--orange:#a35b13}
+*{box-sizing:border-box}body{margin:0;overflow:hidden}button{font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #72adf2;outline-offset:4px}.viewport{height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px 24px 70px}.frame{position:relative;flex:none;box-shadow:0 15px 55px #0004}.deck{position:absolute;top:0;left:0;width:1600px;height:900px;transform-origin:top left;background:#fff;overflow:hidden;cursor:default}.slide{position:absolute;inset:0;display:none;overflow:hidden;background:white;padding:72px 92px 74px}.slide.active{display:flex;flex-direction:column;animation:slide-in .35s ease-out}.slide h1,.slide h2,.slide h3,.slide p{margin:0}.slide h1{font-size:82px;line-height:1.13;letter-spacing:-2px;color:var(--navy);font-weight:600}.slide h2{font-size:55px;line-height:1.16;font-weight:600;letter-spacing:-1.2px;color:var(--navy);margin-bottom:42px}.slide h3{font-size:31px;line-height:1.25;color:var(--navy);font-weight:600}.body{font-size:30px;line-height:1.4;flex:1;min-height:0}.subtitle{font-size:32px;line-height:1.45;color:var(--gray)}.muted{color:var(--gray)}.slide-footer{position:absolute;left:92px;right:92px;bottom:30px;display:flex;justify-content:space-between;color:#73808c;font-size:18px;line-height:1}.slide-footer::before{content:"";position:absolute;top:-19px;left:0;right:0;height:1px;background:#e2e7ec}.slide-label{font-size:24px;color:var(--gray);margin-bottom:35px}.title-slide{justify-content:center}.title-slide h1{max-width:1250px;margin-bottom:34px}.title-slide .subtitle{font-size:36px;max-width:1200px}.title-slide .proposal{margin-top:68px;font-size:24px;color:var(--gray)}.title-slide::before{content:"";position:absolute;left:0;top:0;bottom:0;width:20px;background:var(--blue)}
+.bullets{margin:0;padding-left:34px}.bullets li{padding-left:8px;margin-bottom:33px;font-size:34px;line-height:1.42;max-width:1290px}.bullets li::marker{color:var(--blue)}.bullets strong{font-weight:600}.body p.lead{font-size:32px;line-height:1.45;margin-bottom:33px;max-width:1340px}.body p.detail{font-size:28px;line-height:1.5;max-width:1340px;color:var(--gray)}.statement{font-size:31px;line-height:1.45;border-left:5px solid var(--blue);padding:9px 0 9px 26px;margin-top:34px;max-width:1350px}.statement strong{font-weight:600;color:var(--navy)}
+.flow{display:flex;align-items:stretch;margin:28px 0 37px;gap:0;min-height:205px}.node{flex:1;position:relative;min-width:0;border:2px solid #b4c7dd;background:#f2f6fb;padding:28px 22px 24px;display:flex;flex-direction:column;justify-content:center}.node strong{font-weight:600;font-size:31px;line-height:1.22;color:var(--navy)}.node p{font-size:24px;line-height:1.35;margin-top:15px;color:var(--gray)}.node .step-no{font-size:20px;color:var(--blue);margin-bottom:18px}.node.final{background:#e5edf8;border-color:var(--blue)}.node.gate{background:#faf3e8;border-color:#d5bb91}.connector{display:flex;align-items:center;justify-content:center;width:54px;flex:none;color:#7791ac;font-size:35px}.connector svg{width:43px;height:30px}.flow.current .node{background:#f5f6f7;border-color:#c8d0d8}.flow.current .node.final{border-style:dashed;background:white}.flow.current .node strong{font-size:29px}.flow-label{font-size:24px;color:var(--gray);margin-bottom:16px}.two-text{display:grid;grid-template-columns:1fr 1fr;gap:75px;margin-top:30px}.two-text h3{margin-bottom:17px}.two-text p{font-size:29px;line-height:1.45;color:var(--gray)}.environment-flow{display:flex;gap:0;align-items:center;margin:15px 0 42px}.environment{flex:1;padding:28px 0;border-top:4px solid var(--blue)}.environment h3{font-size:39px;margin-bottom:18px}.environment p{font-size:27px;color:var(--gray);line-height:1.5}.environment-flow .connector{width:90px}.environment-flow .connector svg{width:55px}.environment .step-no{font-size:23px;color:var(--blue);margin-bottom:17px}.body .wide-note{font-size:28px;line-height:1.4;margin-top:28px;color:var(--gray)}
+.table{border-collapse:collapse;width:100%;text-align:left;table-layout:fixed;font-size:28px;line-height:1.35}.table th{padding:17px 24px;background:var(--navy);color:white;font-size:26px;font-weight:500;vertical-align:top}.table td{padding:23px 24px;border-bottom:1px solid var(--line);vertical-align:top}.table tbody tr:nth-child(even){background:#f3f6fa}.table td:first-child{font-weight:600;color:var(--navy)}.table small{display:block;font-size:23px;line-height:1.4;color:var(--gray);font-weight:400;margin-top:10px}.table.approvals td{padding-top:30px;padding-bottom:30px}.table.tests td,.table.failures td{padding-top:20px;padding-bottom:20px}.table.rollout td{padding:18px 22px;font-size:27px}.table.rollout th{font-size:24px}.table.rollout td:first-child{font-size:28px}.question-list{list-style:none;padding:0;margin:0;counter-reset:question}.question-list li{counter-increment:question;padding:25px 0 25px 75px;position:relative;border-top:1px solid var(--line);font-size:32px;line-height:1.4}.question-list li::before{content:counter(question) ".";position:absolute;left:4px;top:25px;font-size:31px;font-weight:600;color:var(--blue)}.question-list li:last-child{border-bottom:1px solid var(--line)}.body .end-note{font-size:29px;color:var(--blue);margin-top:36px;line-height:1.4}
+
+/* Keep this proposal in the same slide format as Presentation 01. */
+.repo-table code,.structure-table code{font-family:Consolas,"Liberation Mono",monospace;font-size:28px;font-weight:500}
+.repo-table td{padding-top:26px;padding-bottom:26px}
+.structure-table td{padding-top:18px;padding-bottom:18px}
+.tradeoff-table td{padding-top:30px;padding-bottom:30px;font-weight:400!important;color:#17283d!important}
+.execution-table td{padding-top:20px;padding-bottom:20px;font-size:27px}
+.integrations-table td{padding-top:21px;padding-bottom:21px}
+.scope-list li{font-size:32px;margin-bottom:27px}
+.completion-list li{font-size:32px;margin-bottom:31px}
+.decision-slide .question-list li{font-size:30px;padding-top:18px;padding-bottom:18px}
+.decision-slide .question-list li::before{top:18px}
+.decision-slide .body .end-note{margin-top:28px}
+
+/* Each advance reveals one point, as in a slide presentation. */
+[data-build]{opacity:0;transform:translateY(11px);transition:opacity .35s ease-out,transform .35s ease-out}[data-build].shown{opacity:1;transform:none}.node[data-build].shown{border-color:#8daacb}.node.final[data-build].shown{border-color:var(--blue)}.node.gate[data-build].shown{border-color:#d5bb91}.slide.build-complete [data-build]{opacity:1;transform:none}
+.controls{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);height:36px;display:flex;align-items:center;gap:16px;color:#d2d8df;font-size:13px;z-index:20}.controls button{border:0;background:transparent;color:inherit;padding:5px 8px;font-size:22px;line-height:1}.controls button:disabled{opacity:.3;cursor:default}.controls .count{font-size:13px;min-width:53px;text-align:center;font-variant-numeric:tabular-nums}.controls .fullscreen{font-size:16px;margin-left:5px}.help{position:fixed;bottom:25px;right:26px;color:#aeb7c2;font-size:12px;z-index:20}.build-hint{position:fixed;left:26px;bottom:25px;color:#aeb7c2;font-size:12px;z-index:20}.a11y-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.help-panel{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);padding:22px 28px;background:#fff;color:#26364a;font-size:16px;line-height:1.8;z-index:30;box-shadow:0 6px 30px #0005;border:1px solid #c9d4e0}.help-panel[hidden]{display:none}.help-panel strong{font-size:18px}.help-button{font-size:16px!important}.noscript{position:fixed;top:0;left:0;right:0;padding:18px;background:white;z-index:100;color:#17283d}
+@keyframes slide-in{from{opacity:0}to{opacity:1}}
+@media(max-width:750px){.viewport{padding:12px 8px 65px}.help{display:none}.build-hint{left:12px;bottom:57px;font-size:10px}.controls{gap:11px}.slide{touch-action:pan-y}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}[data-build]{transform:none}}
+@media print{@page{size:1600px 900px;margin:0}html,body{width:1600px;height:auto;background:#fff;overflow:visible;-webkit-print-color-adjust:exact;print-color-adjust:exact}.viewport{display:block;height:auto;padding:0}.frame{width:1600px!important;height:auto!important;box-shadow:none}.deck{position:static;transform:none!important;height:auto;overflow:visible}.slide,.slide.active{display:flex!important;position:relative;inset:auto;width:1600px;height:900px;break-after:page;animation:none!important}.slide:last-child{break-after:auto}[data-build]{opacity:1!important;transform:none!important}.controls,.help,.build-hint,.help-panel,.a11y-status{display:none!important}}
+</style>
+</head>
+<body>
+<noscript><div class="noscript">Enable JavaScript to view this presentation.</div></noscript>
+<main class="viewport" aria-label="DevOps monorepo presentation">
+<div class="frame" id="frame"><div class="deck" id="deck">
+<section class="slide title-slide active" aria-labelledby="title1" data-title="DevOps monorepo">
+  <div class="slide-label">TrekAI</div>
+  <h1 id="title1">DevOps monorepo</h1>
+  <p class="subtitle">Bringing our infrastructure and deployment code<br>into one repository</p>
+  <p class="proposal">Proposal 02</p>
+</section>
+<section class="slide" aria-labelledby="title2" data-title="Current repository setup">
+  <h2 id="title2">Current repository setup</h2>
+  <div class="body">
+    <p class="lead">Our Terraform and GitOps code lives in separate repositories.</p>
+    <table class="table repo-table">
+      <colgroup><col style="width:36%"><col style="width:64%"></colgroup>
+      <thead><tr><th>Repository</th><th>What it contains</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td><code>tl-trekai-terraform</code></td><td>Terraform for Trek Learning and shared infrastructure.</td></tr>
+        <tr data-build="2"><td><code>tl-trekcap-terraform</code></td><td>Terraform for TrekCAP infrastructure in RD.</td></tr>
+        <tr data-build="3"><td><code>tl-lms-gitOps</code></td><td>Application deployment configuration for Trek Learning.</td></tr>
+        <tr data-build="4"><td><code>cap-gitOps</code></td><td>Application deployment configuration for TrekCAP in RD.</td></tr>
+      </tbody>
+    </table>
+    <p class="wide-note" data-build="5">We also need to identify other infrastructure repositories, scripts and Ansible code<br>before deciding what to include.</p>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title3" data-title="Proposed repository structure">
+  <h2 id="title3">Proposed repository structure</h2>
+  <div class="body">
+    <p class="lead">A monorepo stores related projects in one Git repository.<br>Example name: <strong>devops</strong>. The team will agree the final name and layout.</p>
+    <table class="table structure-table">
+      <colgroup><col style="width:29%"><col style="width:71%"></colgroup>
+      <thead><tr><th>Folder</th><th>What goes here</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td><code>terraform/</code></td><td>Infrastructure code, separated by product and environment.</td></tr>
+        <tr data-build="2"><td><code>gitops/</code></td><td>Application deployment configuration for each product.</td></tr>
+        <tr data-build="3"><td><code>automation/</code></td><td>DevOps scripts and Ansible code that we agree to include.</td></tr>
+        <tr data-build="4"><td><code>.github/</code></td><td>GitHub Actions workflows and code review rules.</td></tr>
+        <tr data-build="5"><td><code>docs/</code></td><td>Setup instructions and operating procedures.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title4" data-title="Benefits and tradeoffs">
+  <h2 id="title4">Benefits and tradeoffs</h2>
+  <div class="body">
+    <table class="table tradeoff-table">
+      <colgroup><col style="width:50%"><col style="width:50%"></colgroup>
+      <thead><tr><th>What we gain</th><th>What we need to manage</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>One place to find DevOps code<br>and instructions.</td><td>A larger repository needs a clear layout<br>and an owner for each area.</td></tr>
+        <tr data-build="2"><td>Shared checks and workflows<br>can reduce duplicated setup.</td><td>A shared workflow change can affect<br>more teams and needs wider testing.</td></tr>
+        <tr data-build="3"><td>Related changes can be reviewed<br>together in one pull request.</td><td>Checks must understand dependencies<br>and involve every affected owner.</td></tr>
+      </tbody>
+    </table>
+    <div class="statement" data-build="4"><strong>Alternative:</strong> keep the repositories separate<br>and use shared workflows and standards.</div>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title5" data-title="Scope and access">
+  <h2 id="title5">Scope and access</h2>
+  <div class="body">
+    <ul class="bullets scope-list">
+      <li data-build="1">Start with the Terraform and GitOps repositories we agree to include.</li>
+      <li data-build="2">Review scripts, Ansible and older infrastructure code before moving them.</li>
+      <li data-build="3">Application source code belongs to the separate application<br>monorepo proposals.</li>
+      <li data-build="4">Keep code in a separate repository when it needs separate read access.<br>Folder review rules do not restrict who can read the code.</li>
+    </ul>
+    <p class="wide-note" data-build="5">Each environment keeps its own Terraform state, permissions and deployment rules.</p>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title6" data-title="How a code change is reviewed">
+  <h2 id="title6">How a code change is reviewed</h2>
+  <div class="body">
+    <div class="flow" aria-label="Proposed pull request review process">
+      <div class="node" data-build="1"><span class="step-no">1</span><strong>Open a PR</strong><p>Change the relevant<br>folder and explain<br>the intended result.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="node" data-build="2"><span class="step-no">2</span><strong>Check what<br>is affected</strong><p>GitHub Actions checks<br>the changed code<br>and its dependencies.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="node" data-build="3"><span class="step-no">3</span><strong>Review<br>the change</strong><p>Owners of the affected<br>areas review the code<br>and check results.</p></div>
+      <div class="connector" data-build="4" aria-hidden="true">→</div>
+      <div class="node final" data-build="4"><span class="step-no">4</span><strong>Merge</strong><p>Merge after the required<br>checks and reviews<br>have passed.</p></div>
+    </div>
+    <div class="two-text">
+      <div data-build="5"><h3>When shared code changes</h3><p>Check the other code that uses it,<br>even if those files did not change.</p></div>
+      <div data-build="6"><h3>When checks or reviews fail</h3><p>The author updates the PR.<br>The checks and reviews run again.</p></div>
+    </div>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title7" data-title="How changes run after merge">
+  <h2 id="title7">How changes run after merge</h2>
+  <div class="body">
+    <p class="lead">Each type of code keeps its own deployment process.</p>
+    <table class="table execution-table">
+      <colgroup><col style="width:25%"><col style="width:75%"></colgroup>
+      <thead><tr><th>Type of change</th><th>What happens next</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>Terraform</td><td>Follow Proposal 01: run a final plan for the target,<br>obtain approval, apply the plan and test the result.</td></tr>
+        <tr data-build="2"><td>GitOps</td><td>Argo CD reads the approved configuration from its new location.<br>It deploys under the agreed policy. The team checks the result.</td></tr>
+        <tr data-build="3"><td>Scripts and Ansible</td><td>Use the agreed trigger, permissions and approval process<br>for that automation.</td></tr>
+      </tbody>
+    </table>
+    <div class="statement" data-build="4">One repository does not mean every component deploys together.<br>Agree the order when one change depends on another.</div>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title8" data-title="What needs to be updated">
+  <h2 id="title8">What needs to be updated</h2>
+  <div class="body">
+    <p class="lead">Moving the files also means updating the systems that use them.</p>
+    <table class="table integrations-table">
+      <colgroup><col style="width:28%"><col style="width:72%"></colgroup>
+      <thead><tr><th>Area</th><th>Updates needed</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>GitHub automation</td><td>Update workflows that write to GitOps repositories.<br>Update GitHub App access and workflow paths.</td></tr>
+        <tr data-build="2"><td>Argo CD</td><td>Update the repository, branch or revision, and folder paths<br>used to read deployment configuration.</td></tr>
+        <tr data-build="3"><td>Terraform</td><td>Update folder paths and shared module references.<br>Confirm each component still uses the intended state.</td></tr>
+        <tr data-build="4"><td>Team setup</td><td>Update reviewers, required checks and execution permissions.<br>Update setup instructions and operating procedures.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title9" data-title="How we move one area">
+  <h2 id="title9">How we move one area</h2>
+  <div class="body">
+    <div class="flow" aria-label="Repository migration process for one agreed scope">
+      <div class="node" data-build="1"><span class="step-no">1</span><strong>Prepare<br>the switch</strong><p>List the readers<br>and writers. Pause<br>changes to this scope.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="node" data-build="2"><span class="step-no">2</span><strong>Move the code</strong><p>Use the agreed folders<br>and approach<br>to code history.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="node" data-build="3"><span class="step-no">3</span><strong>Switch<br>the integrations</strong><p>Point the workflows<br>and deployment tools<br>to the new location.</p></div>
+      <div class="connector" data-build="4" aria-hidden="true">→</div>
+      <div class="node final" data-build="4"><span class="step-no">4</span><strong>Verify the move</strong><p>Test the process.<br>Resume changes only<br>in the new location.</p></div>
+    </div>
+    <p class="lead" data-build="5">Keep the old location available for recovery, with writes blocked.</p>
+    <div class="statement" data-build="6"><strong>If the move fails:</strong> stop writes, restore the previous references,<br>reconcile any changes and verify the original process before resuming.</div>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title10" data-title="Implementation plan">
+  <h2 id="title10">Implementation plan</h2>
+  <div class="body">
+    <table class="table rollout">
+      <colgroup><col style="width:25%"><col style="width:43%"><col style="width:32%"></colgroup>
+      <thead><tr><th>Phase</th><th>Work to complete</th><th>Ready to continue when</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>1. Review the setup</td><td>DevOps and current owners list the code,<br>access, workflows and deployment tools.</td><td>We know what would move<br>and what depends on it.</td></tr>
+        <tr data-build="2"><td>2. Agree the design</td><td>The team compares the options and agrees<br>the scope, layout, owners and access.</td><td>The team chooses an approach<br>and a development test scope.</td></tr>
+        <tr data-build="3"><td>3. Test a small move</td><td>DevOps and the area owners move one<br>development scope. Test the workflow<br>and rehearse restoring the old setup.</td><td>Reviews, checks, deployments<br>and recovery work as agreed.</td></tr>
+        <tr data-build="4"><td>4. Move in stages</td><td>Move one agreed area at a time.<br>Check its integrations before retiring<br>the old setup.</td><td>The affected owners accept<br>each move.</td></tr>
+      </tbody>
+    </table>
+    <p class="wide-note" data-build="5">Agree scope and ownership first. Set dates after the work is understood.</p>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title11" data-title="How we know the move works">
+  <h2 id="title11">How we know the move works</h2>
+  <div class="body">
+    <ul class="bullets completion-list">
+      <li data-build="1">PRs run the correct checks and reach the required reviewers.</li>
+      <li data-build="2">Application workflows write to the new location,<br>and Argo CD reads the new configuration.</li>
+      <li data-build="3">Terraform still uses the intended state and environment permissions.</li>
+      <li data-build="4">Deployments and the recovery procedure work in the development test.</li>
+      <li data-build="5">The team can find the code and follow the updated instructions.</li>
+    </ul>
+  </div>
+</section>
+<section class="slide decision-slide" aria-labelledby="title12" data-title="Decisions needed from the team">
+  <h2 id="title12">Decisions needed from the team</h2>
+  <div class="body">
+    <ol class="question-list">
+      <li data-build="1">Do we want one repository, or separate repositories with shared workflows?</li>
+      <li data-build="2">Which code should move, and which code needs separate read access?</li>
+      <li data-build="3">What repository name, folder layout and code history approach will we use?</li>
+      <li data-build="4">Who owns each area, and which reviews and checks are required?</li>
+      <li data-build="5">Which development area moves first, who owns the move and recovery,<br>and what must pass before we continue?</li>
+    </ol>
+    <p class="end-note" data-build="6">Next step: agree the approach and assign owners to review the proposed scope.</p>
+  </div>
+</section>
+</div></div>
+</main>
+<nav class="controls" aria-label="Presentation controls">
+<button id="prev" aria-label="Previous point or slide" title="Previous (←)">‹</button>
+<span class="count" id="counter">01 / 12</span>
+<button id="next" aria-label="Next point or slide" title="Next (→ or Space)">›</button>
+<button class="fullscreen" id="fullscreen" aria-label="Enter fullscreen" title="Fullscreen (F)">⛶</button>
+<button class="help-button" id="helpButton" aria-label="Show presentation shortcuts" aria-expanded="false" title="Shortcuts (?)">?</button>
+</nav>
+<div class="build-hint" id="buildHint">Click or press → to continue</div>
+<div class="help">← → Navigate &nbsp; Space Continue &nbsp; F Fullscreen</div>
+<aside class="help-panel" id="helpPanel" hidden><strong>Presentation controls</strong><br>Click, → or Space: reveal the next point<br>←: go back one point<br>Page Down / Page Up: next / previous slide<br>Home / End: first / last slide<br>A: show the complete slide<br>R: replay the current slide<br>F: fullscreen &nbsp; Esc: close help</aside>
+<div class="a11y-status" id="status" aria-live="polite"></div>
+<script>
+(()=>{'use strict';
+const slides=[...document.querySelectorAll('.slide')],deck=document.getElementById('deck'),frame=document.getElementById('frame');
+const prev=document.getElementById('prev'),next=document.getElementById('next'),counter=document.getElementById('counter'),hint=document.getElementById('buildHint'),status=document.getElementById('status');
+const helpPanel=document.getElementById('helpPanel'),helpButton=document.getElementById('helpButton');
+let index=0,build=0,touch=null,scale=1;
+const maxBuild=()=>Math.max(0,...[...slides[index].querySelectorAll('[data-build]')].map(e=>Number(e.dataset.build)));
+function resize(){const availableW=Math.max(100,window.innerWidth-(window.innerWidth<=750?16:48));const availableH=Math.max(100,window.innerHeight-(window.innerWidth<=750?77:94));scale=Math.min(availableW/1600,availableH/900);frame.style.width=1600*scale+'px';frame.style.height=900*scale+'px';deck.style.transform=`scale(${scale})`;}
+function update(){slides.forEach((slide,i)=>{const active=i===index;slide.classList.toggle('active',active);slide.setAttribute('aria-hidden',String(!active));slide.inert=!active;if(active){slide.classList.toggle('build-complete',build===maxBuild());slide.querySelectorAll('[data-build]').forEach(el=>{const shown=Number(el.dataset.build)<=build;el.classList.toggle('shown',shown);el.setAttribute('aria-hidden',String(!shown));})}});counter.textContent=`${String(index+1).padStart(2,'0')} / ${slides.length}`;prev.disabled=index===0&&build===0;next.disabled=index===slides.length-1&&build===maxBuild();hint.textContent=build<maxBuild()?'Click or press → to show the next point':index<slides.length-1?'Click or press → for the next slide':'End of presentation';status.textContent=`Slide ${index+1}: ${slides[index].dataset.title}${maxBuild()?`, point ${build} of ${maxBuild()}`:''}`;document.title=`02 — ${slides[index].dataset.title}`;try{history.replaceState(null,'',`#slide-${index+1}`)}catch{}}
+function go(i,complete=false){index=Math.max(0,Math.min(slides.length-1,i));build=complete?maxBuild():0;update();}
+function forward(){if(build<maxBuild()){build++;update()}else if(index<slides.length-1)go(index+1);}
+function back(){if(build>0){build--;update()}else if(index>0)go(index-1,true);}
+function toggleHelp(){helpPanel.hidden=!helpPanel.hidden;helpButton.setAttribute('aria-expanded',String(!helpPanel.hidden));}
+async function fullscreen(){try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else{helpPanel.hidden=false;helpButton.setAttribute('aria-expanded','true');}}catch{helpPanel.hidden=false;helpButton.setAttribute('aria-expanded','true');}}
+prev.addEventListener('click',back);next.addEventListener('click',forward);document.getElementById('fullscreen').addEventListener('click',fullscreen);helpButton.addEventListener('click',toggleHelp);
+deck.addEventListener('click',()=>{if(!helpPanel.hidden){helpPanel.hidden=true;helpButton.setAttribute('aria-expanded','false');return;}forward();});
+document.addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;if(e.key==='Escape'){helpPanel.hidden=true;helpButton.setAttribute('aria-expanded','false');return;}if(e.key==='?'||e.key.toLowerCase()==='h'){e.preventDefault();toggleHelp();return;}if(!helpPanel.hidden)return;if(e.key==='ArrowRight'||e.key==='ArrowDown'||(e.key===' '&&!e.target.closest('button'))||e.key==='Enter'&&e.target===document.body){e.preventDefault();forward();}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();back();}else if(e.key==='PageDown'){e.preventDefault();go(index+1);}else if(e.key==='PageUp'){e.preventDefault();go(index-1);}else if(e.key==='Home'){e.preventDefault();go(0);}else if(e.key==='End'){e.preventDefault();go(slides.length-1,true);}else if(e.key.toLowerCase()==='a'){build=maxBuild();update();}else if(e.key.toLowerCase()==='r'){build=0;update();}else if(e.key.toLowerCase()==='f'){e.preventDefault();fullscreen();}});
+deck.addEventListener('touchstart',e=>{touch=[e.changedTouches[0].clientX,e.changedTouches[0].clientY];},{passive:true});deck.addEventListener('touchend',e=>{if(!touch)return;const dx=e.changedTouches[0].clientX-touch[0],dy=e.changedTouches[0].clientY-touch[1];if(Math.abs(dx)>60&&Math.abs(dy)<40){e.preventDefault();dx<0?forward():back();}touch=null;},{passive:false});
+document.addEventListener('fullscreenchange',()=>document.getElementById('fullscreen').setAttribute('aria-label',document.fullscreenElement?'Exit fullscreen':'Enter fullscreen'));
+window.addEventListener('resize',resize);window.addEventListener('hashchange',()=>{const m=location.hash.match(/^#slide-(\d+)$/);if(m&&Number(m[1])-1!==index)go(Number(m[1])-1);});
+slides.forEach((slide,i)=>{const footer=document.createElement('footer');footer.className='slide-footer';const brand=document.createElement('span');brand.textContent='TrekAI';const num=document.createElement('span');num.textContent=String(i+1);footer.append(brand,num);slide.append(footer);});
+const start=location.hash.match(/^#slide-(\d+)$/);resize();go(start?Number(start[1])-1:0);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "message": "Applied diff: 0 created, 1 updated",
+  "created_count": 0,
+  "updated_count": 1,
+  "deleted_count": 0,
+  "failed_items": [],
+  "skipped": [],
+  "result_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\">\n  <g id=\"m3458764690579560266\" data-miro-id=\"3458764690579560266\" transform=\"translate(1275,12500)\" data-frame=\"04B TrekCAP: controlled builds and RD delivery\">\n    <rect data-type=\"frame\" x=\"0\" y=\"0\" width=\"3152\" height=\"1910\" fill=\"#ffffff\" data-title=\"04B TrekCAP: controlled builds and RD delivery\" />\n    <line id=\"m3458764690579560365\" data-miro-id=\"3458764690579560365\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\" data-start=\"m3458764690579560317\" data-end=\"m3458764690579560319\" stroke=\"#313131\" stroke-width=\"2.0\" data-arrow=\"end\" data-shape=\"elbowed\" data-start-side=\"left\" data-end-side=\"right\" data-content=\"Failed required tests\" />\n  </g>\n</svg>",
+  "miro_url": "https://miro.com/app/board/uXjVEOGaQYU=/"
+}

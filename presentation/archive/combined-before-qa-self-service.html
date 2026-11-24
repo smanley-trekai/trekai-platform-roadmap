@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="TrekAI team improvement plan: monorepos, QA environments, Terraform automation, GitOps, observability, Entra ID, privileged access and documentation in one interactive HTML presentation.">
+<title>TrekAI team improvement plan</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#17283d;background:#20242a;color-scheme:light;--blue:#20569c;--navy:#153452;--gray:#526171;--line:#d4dce5;--light:#edf3fa;--orange:#a35b13}
+*{box-sizing:border-box}body{margin:0;overflow:hidden}button{font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #72adf2;outline-offset:4px}.viewport{height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px 24px 70px}.frame{position:relative;flex:none;box-shadow:0 15px 55px #0004}.deck{position:absolute;top:0;left:0;width:1600px;height:900px;transform-origin:top left;background:#fff;overflow:hidden;cursor:default}.slide{position:absolute;inset:0;display:none;overflow:hidden;background:white;padding:72px 92px 74px}.slide.active{display:flex;flex-direction:column;animation:slide-in .35s ease-out}.slide h1,.slide h2,.slide h3,.slide p{margin:0}.slide h1{font-size:82px;line-height:1.13;letter-spacing:-2px;color:var(--navy);font-weight:600}.slide h2{font-size:55px;line-height:1.16;font-weight:600;letter-spacing:-1.2px;color:var(--navy);margin-bottom:42px}.slide h3{font-size:31px;line-height:1.25;color:var(--navy);font-weight:600}.body{font-size:30px;line-height:1.4;flex:1;min-height:0}.subtitle{font-size:32px;line-height:1.45;color:var(--gray)}.muted{color:var(--gray)}.slide-footer{position:absolute;left:92px;right:92px;bottom:30px;display:flex;justify-content:space-between;color:#73808c;font-size:18px;line-height:1}.slide-footer::before{content:"";position:absolute;top:-19px;left:0;right:0;height:1px;background:#e2e7ec}.slide-label{font-size:24px;color:var(--gray);margin-bottom:35px}.title-slide{justify-content:center}.title-slide h1{max-width:1250px;margin-bottom:34px}.title-slide .subtitle{font-size:36px;max-width:1200px}.title-slide .proposal{margin-top:68px;font-size:24px;color:var(--gray)}.title-slide::before{content:"";position:absolute;left:0;top:0;bottom:0;width:20px;background:var(--blue)}
+.bullets{margin:0;padding-left:34px}.bullets li{padding-left:8px;margin-bottom:33px;font-size:34px;line-height:1.42;max-width:1290px}.bullets li::marker{color:var(--blue)}.bullets strong{font-weight:600}.body p.lead{font-size:32px;line-height:1.45;margin-bottom:33px;max-width:1340px}.body p.detail{font-size:28px;line-height:1.5;max-width:1340px;color:var(--gray)}.statement{font-size:31px;line-height:1.45;border-left:5px solid var(--blue);padding:9px 0 9px 26px;margin-top:34px;max-width:1350px}.statement strong{font-weight:600;color:var(--navy)}
+.flow{display:flex;align-items:stretch;margin:28px 0 37px;gap:0;min-height:205px}.node{flex:1;position:relative;min-width:0;border:2px solid #b4c7dd;background:#f2f6fb;padding:28px 22px 24px;display:flex;flex-direction:column;justify-content:center}.node strong{font-weight:600;font-size:31px;line-height:1.22;color:var(--navy)}.node p{font-size:24px;line-height:1.35;margin-top:15px;color:var(--gray)}.node .step-no{font-size:20px;color:var(--blue);margin-bottom:18px}.node.final{background:#e5edf8;border-color:var(--blue)}.node.gate{background:#faf3e8;border-color:#d5bb91}.connector{display:flex;align-items:center;justify-content:center;width:54px;flex:none;color:#7791ac;font-size:35px}.connector svg{width:43px;height:30px}.flow.current .node{background:#f5f6f7;border-color:#c8d0d8}.flow.current .node.final{border-style:dashed;background:white}.flow.current .node strong{font-size:29px}.flow-label{font-size:24px;color:var(--gray);margin-bottom:16px}.two-text{display:grid;grid-template-columns:1fr 1fr;gap:75px;margin-top:30px}.two-text h3{margin-bottom:17px}.two-text p{font-size:29px;line-height:1.45;color:var(--gray)}.environment-flow{display:flex;gap:0;align-items:center;margin:15px 0 42px}.environment{flex:1;padding:28px 0;border-top:4px solid var(--blue)}.environment h3{font-size:39px;margin-bottom:18px}.environment p{font-size:27px;color:var(--gray);line-height:1.5}.environment-flow .connector{width:90px}.environment-flow .connector svg{width:55px}.environment .step-no{font-size:23px;color:var(--blue);margin-bottom:17px}.body .wide-note{font-size:28px;line-height:1.4;margin-top:28px;color:var(--gray)}
+.table{border-collapse:collapse;width:100%;text-align:left;table-layout:fixed;font-size:28px;line-height:1.35}.table th{padding:17px 24px;background:var(--navy);color:white;font-size:26px;font-weight:500;vertical-align:top}.table td{padding:23px 24px;border-bottom:1px solid var(--line);vertical-align:top}.table tbody tr:nth-child(even){background:#f3f6fa}.table td:first-child{font-weight:600;color:var(--navy)}.table small{display:block;font-size:23px;line-height:1.4;color:var(--gray);font-weight:400;margin-top:10px}.table.approvals td{padding-top:30px;padding-bottom:30px}.table.tests td,.table.failures td{padding-top:20px;padding-bottom:20px}.table.rollout td{padding:18px 22px;font-size:27px}.table.rollout th{font-size:24px}.table.rollout td:first-child{font-size:28px}.question-list{list-style:none;padding:0;margin:0;counter-reset:question}.question-list li{counter-increment:question;padding:25px 0 25px 75px;position:relative;border-top:1px solid var(--line);font-size:32px;line-height:1.4}.question-list li::before{content:counter(question) ".";position:absolute;left:4px;top:25px;font-size:31px;font-weight:600;color:var(--blue)}.question-list li:last-child{border-bottom:1px solid var(--line)}.body .end-note{font-size:29px;color:var(--blue);margin-top:36px;line-height:1.4}
+
+.summary-table td{padding-top:20px;padding-bottom:20px}
+.summary-table code,.layout-table code{font-family:Consolas,"Liberation Mono",monospace;font-size:26px;font-weight:500}
+.layout-table td{padding-top:17px;padding-bottom:17px}
+.start-table td{font-size:27px;padding-top:20px;padding-bottom:20px}
+.start-table th{font-size:25px}
+
+/* Each advance reveals one point, as in a slide presentation. */
+[data-build]{opacity:0;transform:translateY(11px);transition:opacity .35s ease-out,transform .35s ease-out}[data-build].shown{opacity:1;transform:none}.node[data-build].shown{border-color:#8daacb}.node.final[data-build].shown{border-color:var(--blue)}.node.gate[data-build].shown{border-color:#d5bb91}.slide.build-complete [data-build]{opacity:1;transform:none}
+.controls{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);height:36px;display:flex;align-items:center;gap:16px;color:#d2d8df;font-size:13px;z-index:20}.controls button{border:0;background:transparent;color:inherit;padding:5px 8px;font-size:22px;line-height:1}.controls button:disabled{opacity:.3;cursor:default}.controls .count{font-size:13px;min-width:53px;text-align:center;font-variant-numeric:tabular-nums}.controls .fullscreen{font-size:16px;margin-left:5px}.help{position:fixed;bottom:25px;right:26px;color:#aeb7c2;font-size:12px;z-index:20}.build-hint{position:fixed;left:26px;bottom:25px;color:#aeb7c2;font-size:12px;z-index:20}.a11y-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.help-panel{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);padding:22px 28px;background:#fff;color:#26364a;font-size:16px;line-height:1.8;z-index:30;box-shadow:0 6px 30px #0005;border:1px solid #c9d4e0}.help-panel[hidden]{display:none}.help-panel strong{font-size:18px}.help-button{font-size:16px!important}.noscript{position:fixed;top:0;left:0;right:0;padding:18px;background:white;z-index:100;color:#17283d}
+@keyframes slide-in{from{opacity:0}to{opacity:1}}
+@media(max-width:750px){.viewport{padding:12px 8px 65px}.help{display:none}.build-hint{left:12px;bottom:57px;font-size:10px}.controls{gap:11px}.slide{touch-action:pan-y}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}[data-build]{transform:none}}
+@media print{@page{size:1600px 900px;margin:0}html,body{width:1600px;height:auto;background:#fff;overflow:visible;-webkit-print-color-adjust:exact;print-color-adjust:exact}.viewport{display:block;height:auto;padding:0}.frame{width:1600px!important;height:auto!important;box-shadow:none}.deck{position:static;transform:none!important;height:auto;overflow:visible}.slide,.slide.active{display:flex!important;position:relative;inset:auto;width:1600px;height:900px;break-after:page;animation:none!important}.slide:last-child{break-after:auto}[data-build]{opacity:1!important;transform:none!important}.controls,.help,.build-hint,.help-panel,.a11y-status{display:none!important}}
+.agenda-list li{padding-top:17px;padding-bottom:17px;font-size:31px;line-height:1.35}.agenda-list li::before{top:17px}.agenda-list a{color:var(--navy);text-decoration:underline;text-decoration-color:#b4c7dd;text-underline-offset:5px}.agenda-list a:hover{color:var(--blue)}.agenda-list a:focus-visible{outline:3px solid #72adf2;outline-offset:5px}.controls .topics-button{font-size:14px;padding:6px 8px}
+
+/* Terraform diagrams retain the deck typography and slide canvas. */
+.tf-pipeline{margin-top:8px}.tf-row-label{font-size:23px;color:var(--gray);margin-bottom:13px}.tf-track{display:grid;grid-template-columns:repeat(5,1fr);gap:31px}.tf-stage{position:relative;min-height:167px;padding:18px 15px 15px;border:2px solid #a5bbd3;background:#f2f6fb}.tf-stage .step-no{font-size:19px;color:var(--blue);display:block;margin-bottom:10px}.tf-stage strong{display:block;font-size:27px;line-height:1.17;color:var(--navy);font-weight:600}.tf-stage p{font-size:22px;line-height:1.3;color:var(--gray);margin-top:10px}.tf-stage.next::after{content:'→';position:absolute;right:-29px;top:76px;font-size:29px;color:#7791ac}.tf-stage.gate{background:#faf3e8;border-color:#d5bb91}.tf-stage.release,.tf-stage.apply{background:#e5edf8;border-color:var(--blue)}.tf-wrap{height:69px;width:100%;display:block;overflow:visible}.tf-pipeline+.wide-note{font-size:26px;line-height:1.35;margin-top:23px}.tf-promotion{margin:8px 0 0}.tf-release-band{font-size:29px;color:var(--navy);border-left:5px solid var(--blue);padding:12px 22px;background:#edf3fa;margin-bottom:20px}.tf-env-track{display:flex;align-items:stretch}.tf-env{flex:1;border:2px solid #a5bbd3;background:#f2f6fb;padding:18px 22px}.tf-env h3{font-size:32px;margin-bottom:17px}.tf-env .tf-cycle{font-size:25px;color:var(--navy);font-weight:600;line-height:1.4;margin-bottom:16px}.tf-env p{font-size:25px;line-height:1.35;color:var(--gray)}.tf-env.prod{background:#e5edf8;border-color:var(--blue)}.tf-promote-arrow{width:70px;flex:none;display:flex;align-items:center;justify-content:center;font-size:36px;color:#7791ac}.tf-promotion .two-text{gap:65px;margin-top:24px}.tf-promotion .two-text h3{font-size:29px}.tf-promotion .two-text p{font-size:26px}.tf-promotion+.wide-note{font-size:26px;line-height:1.35;margin-top:18px}
+</style>
+</head>
+<body>
+<noscript><div class="noscript">Enable JavaScript to view this presentation.</div></noscript>
+<main class="viewport" aria-label="TrekAI team improvement plan">
+<div class="frame" id="frame"><div class="deck" id="deck">
+<section class="slide title-slide active" aria-labelledby="title1" data-title="TrekAI team improvement plan" data-topic="Overview">
+  <div class="slide-label">TrekAI</div>
+  <h1 id="title1">TrekAI team<br>improvement plan</h1>
+  <p class="subtitle">Current setup, proposed improvements<br>and how we will deliver them</p>
+  <p class="proposal">Team discussion</p>
+</section>
+<section class="slide" aria-labelledby="title2" data-title="Presentation topics" data-topic="Overview">
+<h2 id="title2">Presentation topics</h2><div class="body"><ol class="question-list agenda-list"><li data-build="1"><a href="#slide-3" data-slide="2">Monorepo</a></li><li data-build="2"><a href="#slide-16" data-slide="15">QA environments</a></li><li data-build="3"><a href="#slide-24" data-slide="23">Terraform deployment automation</a></li><li data-build="4"><a href="#slide-35" data-slide="34">GitOps standardization</a></li><li data-build="5"><a href="#slide-44" data-slide="43">Observability and alerting</a></li><li data-build="6"><a href="#slide-58" data-slide="57">Microsoft Entra ID and privileged access</a></li><li data-build="7"><a href="#slide-74" data-slide="73">Documentation</a></li></ol><p class="wide-note" data-build="8">Choose a topic, or continue in order. Press T to return here.</p></div></section>
+<section data-topic="01 Monorepo" class="slide title-slide" aria-labelledby="title3" data-title="Monorepo">
+  <div class="slide-label">TrekAI</div>
+  <h1 id="title3">Monorepo</h1>
+  <p class="subtitle">DevOps, Hub/LMS and CAP/TrekFinder<br>Current setup, proposed setup and migration plan</p>
+  <p class="proposal">Topic 01</p>
+</section>
+<section data-topic="01 Monorepo" class="slide" aria-labelledby="title4" data-title="DevOps: current setup">
+  <h2 id="title4">DevOps: current setup</h2>
+  <div class="body">
+    <p class="lead">Our infrastructure and deployment code lives in separate repositories.</p>
+    <table class="table summary-table">
+      <colgroup><col style="width:28%"><col style="width:72%"></colgroup>
+      <thead><tr><th>Area</th><th>Current setup</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>Terraform</td><td><code>tl-trekai-terraform</code> for Trek Learning and shared infrastructure.<br><code>tl-trekcap-terraform</code> for CAP infrastructure in RD.</td></tr>
+        <tr data-build="2"><td>GitOps</td><td><code>tl-lms-gitOps</code> for Trek Learning deployment configuration.<br><code>cap-gitOps</code> for CAP deployment configuration.</td></tr>
+        <tr data-build="3"><td>Other DevOps code</td><td>Identify the scripts, Ansible and other infrastructure code<br>that should be included.</td></tr>
+      </tbody>
+    </table>
+    <p class="wide-note" data-build="4">Related changes can require work in more than one repository.</p>
+  </div>
+</section>
+<section data-topic="01 Monorepo" class="slide" aria-labelledby="title5" data-title="DevOps: proposed setup">
+  <h2 id="title5">DevOps: proposed setup</h2>
+  <div class="body">
+    <p class="lead">One repository for the infrastructure, deployment and automation code<br>we agree to bring together.</p>
+    <table class="table layout-table">
+      <colgroup><col style="width:30%"><col style="width:70%"></colgroup>
+      <thead><tr><th>Example folder</th><th>What it contains</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td><code>terraform/</code></td><td>Infrastructure code, separated by product and environment.</td></tr>
+        <tr data-build="2"><td><code>gitops/</code></td><td>Application deployment configuration for each product.</td></tr>
+        <tr data-build="3"><td><code>automation/</code></td><td>Agreed scripts and Ansible code.</td></tr>
+        <tr data-build="4"><td><code>.github/</code> and <code>docs/</code></td><td>Shared checks, review rules and operating instructions.</td></tr>
+      </tbody>
+    </table>
+    <div class="statement" data-build="5">Each environment keeps its own state, permissions and deployment rules.<br>Code that needs separate read access stays in a separate repository.</div>
+  </div>
+</section>
+<section data-topic="01 Monorepo" class="slide" aria-labelledby="title6" data-title="DevOps: Terraform change to deployment"><h2 id="title6">DevOps: Terraform change to deployment</h2><div class="body"><div class="tf-pipeline" aria-label="Proposed Terraform flow from local changes to verified environment deployment"><div class="tf-row-label">Proposed: review the change and create a version</div><div class="tf-track"><div class="tf-stage  next" data-build="1"><span class="step-no">1</span><strong>Local changes</strong><p>Edit a feature branch.<br>Format and validate.</p></div><div class="tf-stage  next" data-build="2"><span class="step-no">2</span><strong>PR and checks</strong><p>Run checks.<br>Preview root changes.</p></div><div class="tf-stage gate next" data-build="3"><span class="step-no">3</span><strong>PR approval</strong><p>Review code, plans<br>and policy results.</p></div><div class="tf-stage  next" data-build="4"><span class="step-no">4</span><strong>Merge to main</strong><p>Merge approved code<br>after checks pass.</p></div><div class="tf-stage release " data-build="5"><span class="step-no">5</span><strong>Create a release</strong><p>Tag merged commit.<br>Record changed roots.</p></div></div><svg class="tf-wrap" viewBox="0 0 1416 69" aria-hidden="true" data-build="6"><path d="M1287 0 V24 H129 V61" fill="none" stroke="#7791ac" stroke-width="2.5"/><path d="M122 54 L129 63 L136 54" fill="none" stroke="#7791ac" stroke-width="2.5"/></svg><div class="tf-row-label">Deploy that version to one selected environment</div><div class="tf-track"><div class="tf-stage  next" data-build="6"><span class="step-no">6</span><strong>Select target</strong><p>Select release + root.<br>Use target settings.</p></div><div class="tf-stage  next" data-build="7"><span class="step-no">7</span><strong>Create final plan</strong><p>Use target inputs<br>and current state.</p></div><div class="tf-stage gate next" data-build="8"><span class="step-no">8</span><strong>Approve deployment</strong><p>Authorize this plan<br>for this environment.</p></div><div class="tf-stage apply next" data-build="9"><span class="step-no">9</span><strong>Apply the plan</strong><p>Apply the exact<br>authorized saved plan.</p></div><div class="tf-stage  " data-build="10"><span class="step-no">10</span><strong>Verify and record</strong><p>Test the result.<br>Record run details.</p></div></div></div><p class="wide-note" data-build="11">PR approval permits merging; deployment approval permits applying the final plan.<br>Stop and review a new plan after a failed check or invalidated plan.</p></div></section>
+<section data-topic="01 Monorepo" class="slide" aria-labelledby="title7" data-title="DevOps: promote a Terraform release"><h2 id="title7">DevOps: promote a Terraform release</h2><div class="body"><div class="tf-promotion" aria-label="Proposed Terraform configuration promotion through development, staging and production">
+<div class="tf-release-band" data-build="1">Promote tested code or module versions, with environment-specific configuration.</div>
+<div class="tf-env-track">
+<div class="tf-env" data-build="2"><h3>Development</h3><div class="tf-cycle">Plan → authorize<br>→ apply → verify</div><p>Run acceptance tests<br>on the infrastructure.</p></div>
+<div class="tf-promote-arrow" data-build="3" aria-hidden="true">→</div>
+<div class="tf-env" data-build="3"><h3>Staging</h3><div class="tf-cycle">Plan → approve<br>→ apply → verify</div><p>Check integrations<br>after development passes.</p></div>
+<div class="tf-promote-arrow" data-build="4" aria-hidden="true">→</div>
+<div class="tf-env prod" data-build="4"><h3>Production</h3><div class="tf-cycle">Plan → approve<br>→ apply → verify</div><p>Check service health<br>after staging passes.</p></div>
+</div>
+<div class="two-text"><div data-build="5"><h3>Each target has its own plan</h3><p>Use each target’s root, inputs, state and identity.<br>Queue runs per state. Create a fresh plan per target.</p></div><div data-build="6"><h3>Promotion must be explicit</h3><p>Update the next environment’s configuration<br>or module reference through review.<br>A tag alone does not copy changes.</p></div></div>
+</div><p class="wide-note" data-build="7">A release tag is optional versioning; deployment still needs a plan.<br>Keep release references immutable. Record the exact commit and stop promotion on failure.</p></div></section>
+<section data-topic="01 Monorepo" class="slide" aria-labelledby="title8" data-title="DevOps: how we get there">
+  <h2 id="title8">DevOps: how we get there</h2>
+  <div class="body">
+    <div class="flow" aria-label="DevOps monorepo migration steps">
+      <div class="node" data-build="1"><span class="step-no">1</span><strong>Review the code</strong><p>List the repositories,<br>owners and systems<br>that use them.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="node" data-build="2"><span class="step-no">2</span><strong>Agree the setup</strong><p>Choose the scope,<br>folders, access<br>and required checks.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="node" data-build="3"><span class="step-no">3</span><strong>Test a small move</strong><p>Move one development<br>area. Test deployment<br>and recovery.</p></div>
+      <div class="connector" data-build="4" aria-hidden="true">→</div>
+      <div class="node final" data-build="4"><span class="step-no">4</span><strong>Move in stages</strong><p>Move the remaining<br>agreed areas after<br>the trial works.</p></div>
+    </div>
+    <div class="two-text">
+      <div data-build="5"><h3>Update the integrations</h3><p>Change GitHub workflow destinations,<br>Argo CD paths and Terraform references.</p></div>
+      <div data-build="6"><h3>Keep one place for changes</h3><p>Block writes to the old location.<br>Keep it available for recovery.</p></div>
+    </div>
+  </div>
+</section>
+<section data-topic="01 Monorepo" class="slide" aria-labelledby="title9" data-title="Hub/LMS: current setup">
+  <h2 id="title9">Hub/LMS: current setup</h2>
+  <div class="body">
+    <p class="lead">The Trek Learning application stack is split across service repositories.</p>
+    <table class="table summary-table">
+      <colgroup><col style="width:28%"><col style="width:72%"></colgroup>
+      <thead><tr><th>Area</th><th>Current setup</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>Web and core APIs</td><td>The web interface, core service and authentication service<br>have separate repositories.</td></tr>
+        <tr data-build="2"><td>AI tools</td><td>AI, chat, tutor and grading services<br>have separate repositories.</td></tr>
+        <tr data-build="3"><td>Content and files</td><td>Ingestion, retrieval, file handling and batch jobs<br>have separate repositories.</td></tr>
+      </tbody>
+    </table>
+    <p class="wide-note" data-build="4">Application workflows build images and update GitOps configuration.<br>Argo CD uses that configuration to deploy the services.</p>
+  </div>
+</section>
+<section data-topic="01 Monorepo" class="slide" aria-labelledby="title10" data-title="Hub/LMS: proposed setup">
+  <h2 id="title10">Hub/LMS: proposed setup</h2>
+  <div class="body">
+    <p class="lead">One product repository for related application code and shared tooling.</p>
+    <table class="table layout-table">
+      <colgroup><col style="width:30%"><col style="width:70%"></colgroup>
+      <thead><tr><th>Example folder</th><th>What it contains</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td><code>apps/</code></td><td>The Hub/LMS web interface.</td></tr>
+        <tr data-build="2"><td><code>services/</code></td><td>A separate folder for each backend service.</td></tr>
+        <tr data-build="3"><td><code>packages/</code></td><td>Reusable code where sharing it is useful.</td></tr>
+        <tr data-build="4"><td><code>.github/</code> and <code>docs/</code></td><td>Shared checks, local setup and team instructions.</td></tr>
+      </tbody>
+    </table>
+    <div class="statement" data-build="5">Services keep their own builds, images and releases.</div>
+    <p class="wide-note" data-build="6">Coordinate Terraform/GitOps with DevOps. Agree database and pipeline scope.</p>
+  </div>
+</section>
+<section data-topic="01 Monorepo" class="slide" aria-labelledby="title11" data-title="Hub/LMS: how we get there">
+  <h2 id="title11">Hub/LMS: how we get there</h2>
+  <div class="body">
+    <div class="flow" aria-label="Hub LMS monorepo migration steps">
+      <div class="node" data-build="1"><span class="step-no">1</span><strong>Map the services</strong><p>Identify dependencies,<br>API contracts<br>and database changes.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="node" data-build="2"><span class="step-no">2</span><strong>Agree the layout</strong><p>Choose service folders,<br>owners, shared code<br>and local setup.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="node" data-build="3"><span class="step-no">3</span><strong>Move a small group</strong><p>Try one service or pair.<br>Build, test and release<br>it in development.</p></div>
+      <div class="connector" data-build="4" aria-hidden="true">→</div>
+      <div class="node final" data-build="4"><span class="step-no">4</span><strong>Move in groups</strong><p>Update builds and<br>deployment references.<br>Verify each move.</p></div>
+    </div>
+    <div class="two-text">
+      <div data-build="5"><h3>Check all affected services</h3><p>Shared code changes must test<br>the services that use that code.</p></div>
+      <div data-build="6"><h3>Test the complete user journey</h3><p>Check that the UI, APIs and data changes<br>work together before expanding.</p></div>
+    </div>
+  </div>
+</section>
+<section data-topic="01 Monorepo" class="slide" aria-labelledby="title12" data-title="CAP/TrekFinder: current setup">
+  <h2 id="title12">CAP/TrekFinder: current setup</h2>
+  <div class="body">
+    <p class="lead">TrekFinder is the application. CAP provides the adaptive engine.</p>
+    <table class="table summary-table">
+      <colgroup><col style="width:28%"><col style="width:72%"></colgroup>
+      <thead><tr><th>Area</th><th>Current setup</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>TrekFinder app</td><td>The UI and backend are in separate repositories.</td></tr>
+        <tr data-build="2"><td>CAP engine and services</td><td>Engine modules and supporting services<br>are spread across repositories.</td></tr>
+        <tr data-build="3"><td>Builds and tests</td><td>CI policy, integration tests, application tests<br>and benchmarks have separate repositories.</td></tr>
+      </tbody>
+    </table>
+    <div class="statement" data-build="4">Some engine source and CI policy have restricted access.<br>The repository structure must preserve those access rules.</div>
+  </div>
+</section>
+<section data-topic="01 Monorepo" class="slide" aria-labelledby="title13" data-title="CAP/TrekFinder: proposed setup">
+  <h2 id="title13">CAP/TrekFinder: proposed setup</h2>
+  <div class="body">
+    <p class="lead">Bring related product code together while keeping restricted source controlled.</p>
+    <table class="table summary-table">
+      <colgroup><col style="width:28%"><col style="width:72%"></colgroup>
+      <thead><tr><th>Location</th><th>What it contains</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>Product monorepo</td><td>TrekFinder UI and backend, plus services, modules and tests<br>that can share the same source access.</td></tr>
+        <tr data-build="2"><td>Restricted repositories</td><td>Protected engine source and trusted CI policy.<br>Authorized builds provide approved images or packages.</td></tr>
+        <tr data-build="3"><td>DevOps repository</td><td>Agreed Terraform and GitOps code,<br>coordinated with the DevOps monorepo plan.</td></tr>
+      </tbody>
+    </table>
+    <div class="statement" data-build="4">Group code by who is allowed to read it.<br>Folder review rules cannot protect restricted source inside a shared repository.</div>
+  </div>
+</section>
+<section data-topic="01 Monorepo" class="slide" aria-labelledby="title14" data-title="CAP/TrekFinder: how we get there">
+  <h2 id="title14">CAP/TrekFinder: how we get there</h2>
+  <div class="body">
+    <div class="flow" aria-label="CAP TrekFinder monorepo migration steps">
+      <div class="node" data-build="1"><span class="step-no">1</span><strong>Map code<br>and access</strong><p>Confirm source access,<br>build owners<br>and dependencies.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="node" data-build="2"><span class="step-no">2</span><strong>Agree the groups</strong><p>Choose what can move<br>together and what<br>must stay restricted.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="node" data-build="3"><span class="step-no">3</span><strong>Try the UI/backend</strong><p>Start with a permitted<br>group. Test its release<br>in the RD environment.</p></div>
+      <div class="connector" data-build="4" aria-hidden="true">→</div>
+      <div class="node final" data-build="4"><span class="step-no">4</span><strong>Move in groups</strong><p>Update build and<br>deployment references.<br>Keep access controlled.</p></div>
+    </div>
+    <div class="two-text">
+      <div data-build="5"><h3>Use specific dependency versions</h3><p>Pin approved image and package versions<br>so builds use the intended components.</p></div>
+      <div data-build="6"><h3>Verify the application works</h3><p>Run integration and user journey tests.<br>Rehearse recovery before expanding.</p></div>
+    </div>
+  </div>
+</section>
+<section data-topic="01 Monorepo" class="slide" aria-labelledby="title15" data-title="How we start">
+  <h2 id="title15">How we start</h2>
+  <div class="body">
+    <table class="table summary-table start-table">
+      <colgroup><col style="width:22%"><col style="width:39%"><col style="width:39%"></colgroup>
+      <thead><tr><th>Monorepo</th><th>Proposed first trial</th><th>Teams to agree the plan</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>DevOps</td><td>One development area<br>and its integrations.</td><td>DevOps and the current<br>code owners.</td></tr>
+        <tr data-build="2"><td>Hub/LMS</td><td>One service or a small pair<br>of related services.</td><td>Application developers,<br>QA and DevOps.</td></tr>
+        <tr data-build="3"><td>CAP/TrekFinder</td><td>A permitted UI/backend group<br>in RD.</td><td>Application and restricted-source<br>owners, QA and DevOps.</td></tr>
+      </tbody>
+    </table>
+    <div class="statement" data-build="4">Before moving code, agree access, ownership, required tests<br>and how to restore the old setup if the move fails.</div>
+    <p class="wide-note" data-build="5">Expand after each trial works. Keep one writable source for every moved area.</p>
+  </div>
+</section>
+<section data-topic="02 QA environments" class="slide title-slide" aria-labelledby="title16" data-title="QA environments">
+  <div class="slide-label">TrekAI</div>
+  <h1 id="title16">QA environments</h1>
+  <p class="subtitle">Current setup, proposed improvements<br>and implementation plan</p>
+  <p class="proposal">Topic 02</p>
+</section>
+<section data-topic="02 QA environments" class="slide" aria-labelledby="title17" data-title="QA: current setup">
+<h2 id="title17">QA: current setup</h2>
+<div class="body"><p class="lead">We have product environments to build on.</p><table class="table summary-table"><colgroup><col style="width:28%"><col style="width:72%"></colgroup><thead><tr><th>Area</th><th>Documented setup</th></tr></thead><tbody><tr data-build="1"><td>Trek Learning</td><td>Development, staging and production environments.</td></tr><tr data-build="2"><td>CAP/TrekFinder</td><td>RD is the documented deployment environment.</td></tr><tr data-build="3"><td>QA setup</td><td>Confirm existing QA instances and how the team deploys,<br>resets and removes them.</td></tr></tbody></table><div class="statement" data-build="4">The next addition is a repeatable, isolated environment<br>where QA can test a selected release.</div></div>
+</section>
+<section data-topic="02 QA environments" class="slide" aria-labelledby="title18" data-title="QA: proposed setup">
+<h2 id="title18">QA: proposed setup</h2>
+<div class="body"><ul class="bullets"><li data-build="1">QA selects the product, release and type of test.</li><li data-build="2">An approved workflow creates the environment<br>and deploys the selected application versions.</li><li data-build="3">QA runs functional, load and recovery tests<br>with agreed data and accounts.</li><li data-build="4">The environment has an owner, a cost limit<br>and clear reset or removal rules.</li></ul></div>
+</section>
+<section data-topic="02 QA environments" class="slide" aria-labelledby="title19" data-title="Choosing what to test">
+<h2 id="title19">Choosing what to test</h2>
+<div class="body"><p class="lead">A release manifest is a file that describes the test setup.</p><table class="table summary-table"><colgroup><col style="width:28%"><col style="width:72%"></colgroup><thead><tr><th>Release manifest</th><th>What we record</th></tr></thead><tbody><tr data-build="1"><td>Product and target</td><td>The product, environment profile and instance name.</td></tr><tr data-build="2"><td>Versions</td><td>Exact application images and infrastructure template version.</td></tr><tr data-build="3"><td>Setup</td><td>Settings, dependencies, test data, accounts and secret references.</td></tr><tr data-build="4"><td>Test and lifecycle</td><td>Required tests, owner, capacity, budget and expiry or retention.</td></tr></tbody></table><p class="wide-note" data-build="5">Use the same manifest to recreate the setup and identify the versions tested.</p></div>
+</section>
+<section data-topic="02 QA environments" class="slide" aria-labelledby="title20" data-title="How QA creates an environment">
+<h2 id="title20">How QA creates an environment</h2>
+<div class="body"><div class="flow" aria-label="QA environment setup"><div class="node" data-build="1"><span class="step-no">1</span><strong>Select the setup</strong><p>Choose the product,<br>release manifest<br>and test profile.</p></div><div class="connector" data-build="2" aria-hidden="true">→</div><div class="node" data-build="2"><span class="step-no">2</span><strong>Review and approve</strong><p>Check access, scope<br>and cost. Approve<br>the final target plan.</p></div><div class="connector" data-build="3" aria-hidden="true">→</div><div class="node" data-build="3"><span class="step-no">3</span><strong>Create and deploy</strong><p>Terraform creates<br>infrastructure. GitOps<br>deploys the applications.</p></div><div class="connector" data-build="4" aria-hidden="true">→</div><div class="node final" data-build="4"><span class="step-no">4</span><strong>Verify and test</strong><p>Check readiness,<br>then run the agreed<br>QA tests.</p></div></div><div class="two-text"><div data-build="5"><h3>QA starts the workflow</h3><p>Agree who can request it and approve it.<br>The workflow uses scoped permissions.</p></div><div data-build="6"><h3>Setup must pass first</h3><p>Stop on provisioning or readiness failure.<br>Fix the setup before testing begins.</p></div></div></div>
+</section>
+<section data-topic="02 QA environments" class="slide" aria-labelledby="title21" data-title="Isolation and environment lifecycle">
+<h2 id="title21">Isolation and environment lifecycle</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:27%"><col style="width:73%"></colgroup><thead><tr><th>Area</th><th>Proposed rule</th></tr></thead><tbody><tr data-build="1"><td>Test isolation</td><td>Separate targets, data, identities and Terraform state.<br>Verify that shared services can tolerate the tests.</td></tr><tr data-build="2"><td>Reset and removal</td><td>Allow approved QA resets or expiry cleanup.<br>Remove only resources owned by that instance.</td></tr><tr data-build="3"><td>Demos and client pilots</td><td>Use separate profiles and schedules. Keep active pilot data.<br>Require owner approval before changes or retirement.</td></tr></tbody></table><div class="statement" data-build="4">Before removal, stop GitOps from recreating the workloads.<br>Check for leftover resources and cost.</div></div>
+</section>
+<section data-topic="02 QA environments" class="slide" aria-labelledby="title22" data-title="QA: how we get there">
+<h2 id="title22">QA: how we get there</h2>
+<div class="body"><table class="table rollout"><colgroup><col style="width:23%"><col style="width:43%"><col style="width:34%"></colgroup><thead><tr><th>Phase</th><th>Work to complete</th><th>Ready to continue when</th></tr></thead><tbody><tr data-build="1"><td>1. Agree the first scope</td><td>QA and developers choose one product,<br>release and set of tests.</td><td>The setup, owner and limits<br>are clear.</td></tr><tr data-build="2"><td>2. Build the template</td><td>DevOps adds infrastructure, GitOps<br>configuration and data setup.</td><td>The workflow creates<br>a usable environment.</td></tr><tr data-build="3"><td>3. Prove the workflow</td><td>QA recreates, tests and resets it.<br>DevOps checks failures and removal.</td><td>Tests pass and isolation<br>and cleanup work.</td></tr><tr data-build="4"><td>4. Expand coverage</td><td>Add the agreed products and profiles.<br>Publish instructions and cost controls.</td><td>QA can repeat the process<br>with clear support ownership.</td></tr></tbody></table><p class="wide-note" data-build="5">Start with one QA environment. Monorepo migration is not a prerequisite.</p></div>
+</section>
+<section data-topic="02 QA environments" class="slide" aria-labelledby="title23" data-title="QA: decisions for the team">
+<h2 id="title23">QA: decisions for the team</h2>
+<div class="body"><ol class="question-list"><li data-build="1">Which product and test release should we start with?</li><li data-build="2">Which tests require dedicated infrastructure<br>and which can safely share services?</li><li data-build="3">Who can create, approve, reset and remove an environment?</li><li data-build="4">What data, capacity, budget and expiry rules should we use?</li></ol><p class="end-note" data-build="5">Next step: agree the first QA scope and assign QA, developer and DevOps owners.</p></div>
+</section>
+<section data-topic="03 Terraform deployment automation" class="slide title-slide" aria-labelledby="title24" data-title="Terraform deployment automation">
+  <div class="slide-label">TrekAI</div>
+  <h1 id="title24">Terraform deployment<br>automation</h1>
+  <p class="subtitle">Current process, proposed improvements<br>and implementation plan</p>
+  <p class="proposal">Topic 03</p>
+</section>
+<section data-topic="03 Terraform deployment automation" class="slide" aria-labelledby="title25" data-title="Current process">
+  <h2 id="title25">Current process</h2>
+  <div class="body">
+    <p class="lead">We already use GitHub Actions to preview some infrastructure changes.</p>
+    <div class="flow current" aria-label="Current Terraform process">
+      <div class="node" data-build="1"><strong>Open a pull<br>request (PR)</strong><p>Submit the code to<br>main or preston.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="node" data-build="2"><strong>Run checks<br>and a plan</strong><p>GitHub Actions shows<br>the proposed changes.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="node" data-build="3"><strong>Review the PR</strong><p>The team reviews<br>the code and plan.</p></div>
+      <div class="connector" data-build="4" aria-hidden="true">→</div>
+      <div class="node final" data-build="4"><strong>Run apply<br>separately</strong><p>The PR workflow<br>does not run apply.</p></div>
+    </div>
+    <p class="detail" data-build="5">Automatic plans currently cover changes in development folders.<br>We need to extend coverage to staging, production and affected shared code.</p>
+    <div class="statement" data-build="6"><strong>Plan</strong> shows what will change. <strong>Apply</strong> makes the change.</div>
+  </div>
+</section>
+<section data-topic="03 Terraform deployment automation" class="slide" aria-labelledby="title26" data-title="Proposed improvements">
+  <h2 id="title26">Proposed improvements</h2>
+  <div class="body">
+    <ul class="bullets">
+      <li data-build="1">Show a plan for every infrastructure component affected by a change.</li>
+      <li data-build="2">Use GitHub Actions to run the approved infrastructure changes.</li>
+      <li data-build="3">Agree who reviews the code and who approves deployment<br>to each environment.</li>
+      <li data-build="4">Test the result before moving the change to the next environment.</li>
+    </ul>
+  </div>
+</section>
+<section data-topic="03 Terraform deployment automation" class="slide" aria-labelledby="title27" data-title="Before the code is merged">
+  <h2 id="title27">Before the code is merged</h2>
+  <div class="body">
+    <div class="flow" aria-label="Proposed process before merge">
+      <div class="node" data-build="1"><span class="step-no">1</span><strong>Change the code</strong><p>The developer updates<br>the Terraform code.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="node" data-build="2"><span class="step-no">2</span><strong>Open a PR</strong><p>Explain the change<br>and what it should do.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="node" data-build="3"><span class="step-no">3</span><strong>Run checks<br>and plans</strong><p>GitHub Actions checks<br>the affected code.</p></div>
+      <div class="connector" data-build="4" aria-hidden="true">→</div>
+      <div class="node final" data-build="4"><span class="step-no">4</span><strong>Review<br>and merge</strong><p>A reviewer approves<br>the code and plans.</p></div>
+    </div>
+    <div class="two-text">
+      <div data-build="5"><h3>What the reviewer sees</h3><p>The code change, the check results,<br>and what Terraform will create, change or remove.</p></div>
+      <div data-build="6"><h3>If checks fail or changes are requested</h3><p>The developer updates the PR.<br>The checks and review run again.</p></div>
+    </div>
+  </div>
+</section>
+<section data-topic="03 Terraform deployment automation" class="slide" aria-labelledby="title28" data-title="After the code is merged">
+  <h2 id="title28">After the code is merged</h2>
+  <div class="body">
+    <div class="flow" aria-label="Proposed process after merge">
+      <div class="node" data-build="1"><span class="step-no">1</span><strong>Run a final plan</strong><p>Use the merged code<br>and the selected<br>environment.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="node gate" data-build="2"><span class="step-no">2</span><strong>Approve<br>the apply</strong><p>Follow the approval<br>rules for that<br>environment.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="node" data-build="3"><span class="step-no">3</span><strong>Apply the plan</strong><p>GitHub Actions runs<br>the exact plan<br>approved for this target.</p></div>
+      <div class="connector" data-build="4" aria-hidden="true">→</div>
+      <div class="node final" data-build="4"><span class="step-no">4</span><strong>Test the result</strong><p>Check the infrastructure<br>and the required<br>application behavior.</p></div>
+    </div>
+    <p class="lead" data-build="5">We run a new plan after merge because the code or infrastructure<br>may have changed since the PR plan.</p>
+    <div class="statement" data-build="6">A successful apply means Terraform finished.<br>Testing confirms the change works as expected.</div>
+  </div>
+</section>
+<section data-topic="03 Terraform deployment automation" class="slide" aria-labelledby="title29" data-title="Who approves what">
+  <h2 id="title29">Who approves what</h2>
+  <div class="body">
+    <table class="table approvals">
+      <colgroup><col style="width:25%"><col style="width:42%"><col style="width:33%"></colgroup>
+      <thead><tr><th>Decision</th><th>What the person approves</th><th>Who needs to be assigned</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>PR approval</td><td>The code and the changes shown in the preview plans.</td><td>The required code reviewers.</td></tr>
+        <tr data-build="2"><td>Apply approval</td><td>The final plan for the selected environment.</td><td>The people allowed to approve infrastructure changes.</td></tr>
+        <tr data-build="3"><td>Test acceptance</td><td>The test results before the change moves to the next environment.</td><td>The person responsible for the service or its testing.</td></tr>
+      </tbody>
+    </table>
+    <p class="wide-note" data-build="4">Proposal: require final-plan approval for staging and production.<br>The team will decide whether development needs approval or can apply automatically.</p>
+  </div>
+</section>
+<section data-topic="03 Terraform deployment automation" class="slide" aria-labelledby="title30" data-title="Moving changes between environments">
+  <h2 id="title30">Moving changes between environments</h2>
+  <div class="body">
+    <div class="environment-flow" aria-label="Development, staging and production">
+      <div class="environment" data-build="1"><div class="step-no">1</div><h3>Development</h3><p>Apply the change.<br>Run the agreed tests.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="environment" data-build="2"><div class="step-no">2</div><h3>Staging</h3><p>Plan for staging.<br>Approve, apply and test.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="environment" data-build="3"><div class="step-no">3</div><h3>Production</h3><p>Plan for production.<br>Approve, apply and test.</p></div>
+    </div>
+    <p class="lead" data-build="4">After tests pass, update the next environment to use the tested code<br>or shared module version. Generate a new plan for that environment.</p>
+    <p class="detail" data-build="5">Main holds the reviewed code. The Terraform folder, settings and state<br>determine which environment changes.</p>
+    <div class="statement" data-build="6">Every environment needs its own plan.<br>A development plan cannot be used for production.</div>
+  </div>
+</section>
+<section data-topic="03 Terraform deployment automation" class="slide" aria-labelledby="title31" data-title="How we test the change">
+  <h2 id="title31">How we test the change</h2>
+  <div class="body">
+    <p class="lead">Choose the tests based on what the change is supposed to do.</p>
+    <table class="table tests">
+      <colgroup><col style="width:23%"><col style="width:37%"><col style="width:40%"></colgroup>
+      <thead><tr><th>Example</th><th>Before apply</th><th>After apply</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>Database</td><td>Review the database settings<br>and connection setup.</td><td>Confirm the settings and check<br>that the application can connect.</td></tr>
+        <tr data-build="2"><td>Access</td><td>Review who should have access<br>and what they can do.</td><td>Check that allowed access works<br>and unauthorized access fails.</td></tr>
+        <tr data-build="3"><td>Backups</td><td>Agree the backup settings<br>and recovery requirements.</td><td>Check backups and test a restore<br>when the change requires it.</td></tr>
+        <tr data-build="4"><td>Capacity</td><td>Agree the expected workload<br>and performance targets.</td><td>Run the agreed load test<br>and check the results.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section data-topic="03 Terraform deployment automation" class="slide" aria-labelledby="title32" data-title="When something goes wrong">
+  <h2 id="title32">When something goes wrong</h2>
+  <div class="body">
+    <table class="table failures">
+      <colgroup><col style="width:37%"><col style="width:63%"></colgroup>
+      <thead><tr><th>What happens</th><th>What we do next</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>PR checks fail</td><td>The developer fixes the code. Run the checks again<br>before approving the PR.</td></tr>
+        <tr data-build="2"><td>The final plan changes<br>or approval is denied</td><td>Stop the apply. Resolve the issue, create a new plan<br>if needed, and obtain approval again.</td></tr>
+        <tr data-build="3"><td>Apply fails</td><td>DevOps checks what changed and plans the fix.<br>Review the fix before running it.</td></tr>
+        <tr data-build="4"><td>Tests fail</td><td>Hold the change in the current environment.<br>Fix it and test again before moving forward.</td></tr>
+      </tbody>
+    </table>
+    <p class="wide-note" data-build="5">Run only one apply at a time for the same Terraform state.</p>
+  </div>
+</section>
+<section data-topic="03 Terraform deployment automation" class="slide" aria-labelledby="title33" data-title="Implementation plan">
+  <h2 id="title33">Implementation plan</h2>
+  <div class="body">
+    <table class="table rollout">
+      <colgroup><col style="width:25%"><col style="width:43%"><col style="width:32%"></colgroup>
+      <thead><tr><th>Phase</th><th>Work to complete</th><th>Ready to continue when</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>1. Review the setup</td><td>DevOps checks the existing workflows,<br>permissions and current apply process.</td><td>We know what needs to change<br>and who owns each step.</td></tr>
+        <tr data-build="2"><td>2. Agree the process</td><td>The team chooses the first development<br>scope, reviewers, approvals and tests.</td><td>Owners and approval rules<br>are clear.</td></tr>
+        <tr data-build="3"><td>3. Build in development</td><td>DevOps adds the workflow.<br>The team tests successful changes,<br>blocked changes and failures.</td><td>Planning, approval, apply<br>and testing work as agreed.</td></tr>
+        <tr data-build="4"><td>4. Extend the workflow</td><td>Add staging, then production.<br>Give each its own plan, permissions<br>and approval rules.</td><td>The team accepts the process<br>for each environment.</td></tr>
+      </tbody>
+    </table>
+    <p class="wide-note" data-build="5">Agree the scope and owners first. Set dates once the work is understood.</p>
+  </div>
+</section>
+<section data-topic="03 Terraform deployment automation" class="slide" aria-labelledby="title34" data-title="Decisions needed from the team">
+  <h2 id="title34">Decisions needed from the team</h2>
+  <div class="body">
+    <ol class="question-list">
+      <li data-build="1">Which development infrastructure should we use for the first rollout?</li>
+      <li data-build="2">Who reviews PRs, approves applies and accepts test results?</li>
+      <li data-build="3">Should development apply automatically after merge,<br>or should someone approve it?</li>
+      <li data-build="4">Which tests must pass before we move to staging and production?</li>
+    </ol>
+    <p class="end-note" data-build="5">Next step: agree the development rollout, assign owners and begin the setup review.</p>
+  </div>
+</section>
+<section data-topic="04 GitOps standardization" class="slide title-slide" aria-labelledby="title35" data-title="GitOps standardization">
+  <div class="slide-label">TrekAI</div>
+  <h1 id="title35">GitOps standardization</h1>
+  <p class="subtitle">Current setup, proposed improvements<br>and implementation plan</p>
+  <p class="proposal">Topic 04</p>
+</section>
+<section data-topic="04 GitOps standardization" class="slide" aria-labelledby="title36" data-title="GitOps: current setup">
+<h2 id="title36">GitOps: current setup</h2>
+<div class="body"><p class="lead">Deployment automation already exists.</p><table class="table summary-table"><colgroup><col style="width:28%"><col style="width:72%"></colgroup><thead><tr><th>Area</th><th>Current setup</th></tr></thead><tbody><tr data-build="1"><td>Desired state</td><td><code>tl-lms-gitOps</code> holds Trek Learning configuration.<br><code>cap-gitOps</code> holds CAP/TrekFinder configuration.</td></tr><tr data-build="2"><td>Application delivery</td><td>GitHub Actions builds images and proposes GitOps changes.<br>Argo CD deploys services from that configuration.</td></tr><tr data-build="3"><td>Release promotion</td><td>The Hub/LMS UI workflow builds images separately<br>for development, staging and production.</td></tr></tbody></table><p class="wide-note" data-build="4">Map each service’s checks and handoffs before replacing or extending them.</p></div>
+</section>
+<section data-topic="04 GitOps standardization" class="slide" aria-labelledby="title37" data-title="GitOps: proposed standards">
+<h2 id="title37">GitOps: proposed standards</h2>
+<div class="body"><ul class="bullets"><li data-build="1">Use the same configuration layout and release rules<br>across the agreed products.</li><li data-build="2">Record exact service versions in a release manifest.</li><li data-build="3">Give every target clear owners, checks and deployment approval.</li><li data-build="4">Report deployed versions, health and differences from Git.</li></ul><p class="wide-note" data-build="5">Use the DevOps monorepo where agreed. Keep required source access boundaries.</p></div>
+</section>
+<section data-topic="04 GitOps standardization" class="slide" aria-labelledby="title38" data-title="The release manifest">
+<h2 id="title38">The release manifest</h2>
+<div class="body"><p class="lead">One record connects the built application to its deployment.</p><table class="table summary-table"><colgroup><col style="width:30%"><col style="width:70%"></colgroup><thead><tr><th>Part of the release</th><th>What it tells us</th></tr></thead><tbody><tr data-build="1"><td>Application versions</td><td>The source revision and exact image digests or package versions.</td></tr><tr data-build="2"><td>Target configuration</td><td>The product, environment, settings and secret references.</td></tr><tr data-build="3"><td>Dependencies and data</td><td>Required services, schema changes and compatibility rules.</td></tr><tr data-build="4"><td>Release decision</td><td>The owner, required test results and previous working release.</td></tr></tbody></table><p class="wide-note" data-build="5">A target change must identify which release and configuration it will deploy.</p></div>
+</section>
+<section data-topic="04 GitOps standardization" class="slide" aria-labelledby="title39" data-title="The standard deployment flow">
+<h2 id="title39">The standard deployment flow</h2>
+<div class="body"><div class="flow" aria-label="Standard GitOps deployment flow"><div class="node" data-build="1"><span class="step-no">1</span><strong>Build a release</strong><p>Review source changes.<br>CI tests and publishes<br>the release artifacts.</p></div><div class="connector" data-build="2" aria-hidden="true">→</div><div class="node" data-build="2"><span class="step-no">2</span><strong>Review the target</strong><p>Open a GitOps PR.<br>Check configuration<br>and approve the target.</p></div><div class="connector" data-build="3" aria-hidden="true">→</div><div class="node" data-build="3"><span class="step-no">3</span><strong>Deploy from Git</strong><p>Merge the approved<br>configuration. Argo CD<br>reconciles the target.</p></div><div class="connector" data-build="4" aria-hidden="true">→</div><div class="node final" data-build="4"><span class="step-no">4</span><strong>Verify the result</strong><p>Check deployed versions,<br>application health<br>and user journeys.</p></div></div><div class="two-text"><div data-build="5"><h3>A merge is one step</h3><p>Deployment succeeds when the target<br>is healthy and the agreed tests pass.</p></div><div data-build="6"><h3>Infrastructure has its own workflow</h3><p>Use Terraform for infrastructure changes.<br>Confirm readiness before deploying apps.</p></div></div></div>
+</section>
+<section data-topic="04 GitOps standardization" class="slide" aria-labelledby="title40" data-title="Promoting the tested release">
+<h2 id="title40">Promoting the tested release</h2>
+<div class="body"><div class="environment-flow" aria-label="Proposed Trek Learning release promotion">
+      <div class="environment" data-build="1"><div class="step-no">1</div><h3>Development</h3><p>Deploy a candidate.<br>Run the agreed tests.<br>Record the result.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="environment" data-build="2"><div class="step-no">2</div><h3>Staging</h3><p>Use the same artifacts.<br>Review staging settings.<br>Deploy and verify.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="environment" data-build="3"><div class="step-no">3</div><h3>Production</h3><p>Use accepted artifacts.<br>Approve the release.<br>Verify and monitor.</p></div>
+    </div>
+    <div class="statement" data-build="4">Build once and promote the tested images.<br>Separate environment settings from the build to make this possible.</div>
+    <p class="wide-note" data-build="5">Start with Trek Learning. Agree CAP targets separately from its current RD scope.<br>QA, demo and pilot instances follow their own lifecycle rules.</p></div>
+</section>
+<section data-topic="04 GitOps standardization" class="slide" aria-labelledby="title41" data-title="Failures and recovery">
+<h2 id="title41">Failures and recovery</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:29%"><col style="width:71%"></colgroup><thead><tr><th>What happens</th><th>What we do next</th></tr></thead><tbody><tr data-build="1"><td>Build or checks fail</td><td>Hold the release. Fix the issue and repeat the required checks.</td></tr><tr data-build="2"><td>Deployment or tests fail</td><td>Stop promotion. Review a fix or return to a compatible release.<br>Verify the result before continuing.</td></tr><tr data-build="3"><td>Runtime differs from Git</td><td>Report the difference to the owner.<br>Restore the agreed state or review an intentional change.</td></tr></tbody></table><div class="statement" data-build="4">Recovery must account for database and dependency changes.<br>Reverting Git does not restore database contents.</div></div>
+</section>
+<section data-topic="04 GitOps standardization" class="slide" aria-labelledby="title42" data-title="GitOps: how we get there">
+<h2 id="title42">GitOps: how we get there</h2>
+<div class="body"><table class="table rollout"><colgroup><col style="width:23%"><col style="width:43%"><col style="width:34%"></colgroup><thead><tr><th>Phase</th><th>Work to complete</th><th>Ready to continue when</th></tr></thead><tbody><tr data-build="1"><td>1. Map delivery</td><td>Review service workflows, GitOps paths,<br>manual steps and existing checks.</td><td>We know the release path<br>and owners for each scope.</td></tr><tr data-build="2"><td>2. Agree standards</td><td>Choose the layout, manifest, target<br>rules, approvals and recovery process.</td><td>Developers, QA and DevOps<br>agree the release process.</td></tr><tr data-build="3"><td>3. Prove one release</td><td>Use one service in development.<br>Test success, failure, drift and recovery.</td><td>The tested versions reach<br>the target and work.</td></tr><tr data-build="4"><td>4. Extend in stages</td><td>Add staging and production, then other<br>agreed services and CAP targets.</td><td>Each target passes its checks<br>before old steps are retired.</td></tr></tbody></table><p class="wide-note" data-build="5">Standardize the process while preserving service release and access boundaries.</p></div>
+</section>
+<section data-topic="04 GitOps standardization" class="slide" aria-labelledby="title43" data-title="GitOps: decisions for the team">
+<h2 id="title43">GitOps: decisions for the team</h2>
+<div class="body"><ol class="question-list"><li data-build="1">Which service should use the standard process first?</li><li data-build="2">Where should target configuration live,<br>and who owns each product and environment?</li><li data-build="3">Which checks and approvals must pass before deployment<br>and before promotion to the next environment?</li><li data-build="4">Who responds to failed deployment, drift and recovery?</li></ol><p class="end-note" data-build="5">Next step: agree the first service and document its release process with the owners.</p></div>
+</section>
+<section data-topic="05 Observability and alerting" class="slide title-slide" aria-labelledby="title44" data-title="Observability and alerting">
+  <div class="slide-label">TrekAI</div>
+  <h1 id="title44">Observability<br>and alerting</h1>
+  <p class="subtitle">Current setup, proposed improvements<br>and implementation plan</p>
+  <p class="proposal">Topic 05</p>
+</section>
+<section data-topic="05 Observability and alerting" class="slide" aria-labelledby="title45" data-title="Current setup">
+<h2 id="title45">Current setup</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:27%"><col style="width:73%"></colgroup><thead><tr><th>Area</th><th>Current configuration</th></tr></thead><tbody><tr data-build="1"><td>Monitoring tools</td><td>GitOps contains Grafana dashboards and configuration<br>for metrics, logs and traces.</td></tr><tr data-build="2"><td>Staging collector</td><td>Configured to discard the signals it receives.<br>Other monitoring paths need a separate check.</td></tr><tr data-build="3"><td>Alerting</td><td>Development and staging rules and an email route exist.<br>Confirm active coverage, delivery and response for each target.</td></tr></tbody></table><div class="statement" data-build="4">First, verify the complete path from service signals to team response.<br>Check production and CAP coverage separately.</div></div>
+</section>
+<section data-topic="05 Observability and alerting" class="slide" aria-labelledby="title46" data-title="Proposed improvements">
+<h2 id="title46">Proposed improvements</h2>
+<div class="body"><ul class="bullets"><li data-build="1">Make useful dashboards, logs and traces available<br>for each agreed product and environment.</li><li data-build="2">Assess alerts by user impact and urgency.<br>Record and manage service disruptions as incidents.</li><li data-build="3">Assign response owners, backups and user communication<br>with agreed support hours and targets.</li><li data-build="4">Verify recovery, investigate recurring issues<br>and measure whether the process improves.</li></ul><p class="wide-note" data-build="5">Build on the tools we have. Fix gaps before adding more tools.</p></div>
+</section>
+<section data-topic="05 Observability and alerting" class="slide" aria-labelledby="title47" data-title="What we monitor">
+<h2 id="title47">What we monitor</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:27%"><col style="width:73%"></colgroup><thead><tr><th>Area</th><th>What we need to know</th></tr></thead><tbody><tr data-build="1"><td>User journeys</td><td>Can users sign in, start a lesson and submit their work?</td></tr><tr data-build="2"><td>Service health</td><td>Are requests failing or slowing down?<br>Which service and release are affected?</td></tr><tr data-build="3"><td>Infrastructure</td><td>Are databases, queues or other dependencies failing?<br>Are resource limits affecting the application?</td></tr><tr data-build="4"><td>Monitoring itself</td><td>Has signal collection stopped?<br>Are alert notifications failing to reach the team?</td></tr></tbody></table><p class="wide-note" data-build="5">Choose thresholds and alert timing with service owners, using normal behavior.</p></div>
+</section>
+<section data-topic="05 Observability and alerting" class="slide" aria-labelledby="title48" data-title="How the team investigates">
+<h2 id="title48">How the team investigates</h2>
+<div class="body"><p class="lead">Use dashboards to find the problem, then inspect the details.</p><table class="table summary-table"><colgroup><col style="width:25%"><col style="width:75%"></colgroup><thead><tr><th>Information</th><th>What it helps us understand</th></tr></thead><tbody><tr data-build="1"><td>Metrics</td><td>Show trends such as error rates, response time and resource use.</td></tr><tr data-build="2"><td>Logs</td><td>Show the events and errors around a failure.</td></tr><tr data-build="3"><td>Traces</td><td>Follow a request across services to find where it slows or fails.</td></tr></tbody></table><div class="statement" data-build="4">Identify the product, environment, service and deployed version.<br>QA also records the test instance and release manifest.</div></div>
+</section>
+<section data-topic="05 Observability and alerting" class="slide" aria-labelledby="title49" data-title="Incident priority">
+<h2 id="title49">Incident priority</h2>
+<div class="body"><p class="lead">An alert starts an assessment. A service disruption becomes an incident.<br>Use impact and urgency to choose its priority.</p><table class="table summary-table"><colgroup><col style="width:32%"><col style="width:34%"><col style="width:34%"></colgroup><thead><tr><th>Business impact</th><th>High urgency</th><th>Lower urgency</th></tr></thead><tbody><tr data-build="1"><td>High impact</td><td>P1: highest priority</td><td>P2: high priority</td></tr><tr data-build="2"><td>Limited impact</td><td>P2: high priority</td><td>P3: normal priority</td></tr></tbody></table><p class="wide-note" data-build="3">Proposed starting matrix. Agree the definitions and targets with service owners.</p><div class="two-text">
+      <div data-build="4"><h3>Impact</h3><p>Which users and business activities<br>are affected, and how severely?</p></div>
+      <div data-build="5"><h3>Urgency</h3><p>How long can action wait?<br>Consider any safe workaround.</p></div>
+    </div></div>
+</section>
+<section data-topic="05 Observability and alerting" class="slide" aria-labelledby="title50" data-title="From an alert to recovery">
+<h2 id="title50">From an alert to recovery</h2>
+<div class="body"><div class="flow" aria-label="Proposed incident response process"><div class="node" data-build="1"><span class="step-no">1</span><strong>Assess the impact</strong><p>Check fresh signals<br>and user impact.<br>Choose the priority.</p></div><div class="connector" data-build="2" aria-hidden="true">→</div><div class="node" data-build="2"><span class="step-no">2</span><strong>Record and notify</strong><p>Create an incident<br>for service disruption.<br>Notify the right team.</p></div><div class="connector" data-build="3" aria-hidden="true">→</div><div class="node" data-build="3"><span class="step-no">3</span><strong>Restore service</strong><p>The owner acknowledges<br>and investigates. Use an<br>approved fix or workaround.</p></div><div class="connector" data-build="4" aria-hidden="true">→</div><div class="node final" data-build="4"><span class="step-no">4</span><strong>Verify recovery</strong><p>Check the user journey<br>and fresh signals.<br>Update the incident record.</p></div></div><div class="two-text"><div data-build="5"><h3>If nobody responds</h3><p>Use the agreed backup and escalation path.<br>Track who owns the incident.</p></div><div data-build="6"><h3>If recovery fails</h3><p>Keep the incident open and investigate again.<br>Keep affected users informed.</p></div></div></div>
+</section>
+<section data-topic="05 Observability and alerting" class="slide" aria-labelledby="title51" data-title="Incident records and communication">
+<h2 id="title51">Incident records and communication</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:26%"><col style="width:74%"></colgroup><thead><tr><th>Area</th><th>What we agree</th></tr></thead><tbody><tr data-build="1"><td>Incident record</td><td>Record the service, environment, version and start time.<br>Add impact, priority, owner and actions taken.</td></tr><tr data-build="2"><td>Response targets</td><td>Agree support hours and targets for acknowledgement,<br>escalation and service restoration for each priority.</td></tr><tr data-build="3"><td>Communication</td><td>Name who updates affected users, where and how often.<br>For major incidents, appoint a lead to coordinate the response.</td></tr><tr data-build="4"><td>Closure</td><td>Confirm recovery. Record the outcome and any workaround.<br>Communicate closure and assign remaining follow-up work.</td></tr></tbody></table><p class="wide-note" data-build="5">Use one incident record for related alerts. Keep response instructions linked to it.</p></div>
+</section>
+<section data-topic="05 Observability and alerting" class="slide" aria-labelledby="title52" data-title="Proving that alerts work">
+<h2 id="title52">Proving that alerts work</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:31%"><col style="width:69%"></colgroup><thead><tr><th>Trial</th><th>What must happen</th></tr></thead><tbody><tr data-build="1"><td>Controlled failure</td><td>The real recipient receives and acknowledges the alert.<br>The team records the incident, priority and owner.</td></tr><tr data-build="2"><td>Missing signals</td><td>The agreed no-data alert appears.<br>Missing data must not look like a healthy service.</td></tr><tr data-build="3"><td>No response or failed delivery</td><td>The backup or escalation path reaches a responsible person.<br>Check the agreed response timing and user updates.</td></tr><tr data-build="4"><td>Recovery</td><td>Fresh signals and the user journey confirm recovery.<br>The team records closure and groups duplicate alerts.</td></tr></tbody></table><p class="wide-note" data-build="5">Repeat the relevant checks after changing rules, recipients or ownership.</p></div>
+</section>
+<section data-topic="05 Observability and alerting" class="slide" aria-labelledby="title53" data-title="Environment and data rules">
+<h2 id="title53">Environment and data rules</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:30%"><col style="width:70%"></colgroup><thead><tr><th>Area</th><th>Proposed rule</th></tr></thead><tbody><tr data-build="1"><td>QA and maintenance</td><td>Keep test alerts separate from customer incidents.<br>Limit silences to a target and expiry time, then test their expiry.</td></tr><tr data-build="2"><td>Production, demos and pilots</td><td>Agree service monitoring, support coverage and recipients.<br>Keep QA silences separate from active customer environments.</td></tr><tr data-build="3"><td>Data and cost</td><td>Redact sensitive content. Restrict access and agree retention.<br>Set collection limits and review monitoring cost.</td></tr></tbody></table><p class="wide-note" data-build="4">Remove alert targets when a QA instance ends. Keep alerts for unexpected failures.</p></div>
+</section>
+<section data-topic="05 Observability and alerting" class="slide" aria-labelledby="title54" data-title="Learning from incidents">
+<h2 id="title54">Learning from incidents</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:28%"><col style="width:72%"></colgroup><thead><tr><th>Work</th><th>How we handle it</th></tr></thead><tbody><tr data-build="1"><td>Service recovery</td><td>Restore service promptly with a safe fix or workaround.<br>Confirm recovery and complete the incident record.</td></tr><tr data-build="2"><td>Problem investigation</td><td>Open a linked problem record for recurring or serious issues.<br>Investigate causes and record known errors and workarounds.</td></tr><tr data-build="3"><td>Prevention</td><td>Assign an owner to each corrective action.<br>Review and test changes through the agreed change process.</td></tr></tbody></table><div class="statement" data-build="4">Track longer-term investigation separately from service recovery.<br>Update response guides and alert rules with what we learn.</div></div>
+</section>
+<section data-topic="05 Observability and alerting" class="slide" aria-labelledby="title55" data-title="How we measure improvement">
+<h2 id="title55">How we measure improvement</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:31%"><col style="width:69%"></colgroup><thead><tr><th>Measure</th><th>What we track</th></tr></thead><tbody><tr data-build="1"><td>Acknowledgement time</td><td>Time from notification to a responder acknowledging the alert.</td></tr><tr data-build="2"><td>Service recovery time</td><td>Time from incident start to confirmed service recovery.</td></tr><tr data-build="3"><td>Repeat incidents</td><td>How often the same issue returns after recovery or a fix.</td></tr><tr data-build="4"><td>Alert quality</td><td>Alerts that need action, duplicate noise and incidents<br>that monitoring missed.</td></tr></tbody></table><div class="statement" data-build="5">Capture a baseline and agree targets with service owners.<br>Review results regularly and assign owners to improvements.</div></div>
+</section>
+<section data-topic="05 Observability and alerting" class="slide" aria-labelledby="title56" data-title="How we get there">
+<h2 id="title56">How we get there</h2>
+<div class="body"><table class="table rollout"><colgroup><col style="width:23%"><col style="width:43%"><col style="width:34%"></colgroup><thead><tr><th>Phase</th><th>Work to complete</th><th>Ready to continue when</th></tr></thead><tbody><tr data-build="1"><td>1. Review the setup</td><td>Check signals, dashboards and alert routes.<br>Record gaps and baseline response measures.</td><td>We know the gaps<br>for the first scope.</td></tr><tr data-build="2"><td>2. Agree the process</td><td>Choose priorities, targets and owners.<br>Agree incident tracking and user updates.</td><td>Service owners and responders<br>understand the process.</td></tr><tr data-build="3"><td>3. Configure and test</td><td>Fix collection. Test delivery, incident<br>handling, escalation and recovery.</td><td>The trial meets the agreed<br>response and recovery checks.</td></tr><tr data-build="4"><td>4. Expand and improve</td><td>Add services. Review repeated incidents,<br>noisy alerts and corrective actions.</td><td>Owners track outcomes<br>and complete follow-up work.</td></tr></tbody></table><p class="wide-note" data-build="5">Start with one important service. Developers, QA and DevOps verify it together.</p></div>
+</section>
+<section data-topic="05 Observability and alerting" class="slide" aria-labelledby="title57" data-title="Decisions for the team">
+<h2 id="title57">Decisions for the team</h2>
+<div class="body"><ol class="question-list"><li data-build="1">Which service, environment and user journey should we cover first?</li><li data-build="2">What priorities, support hours and response targets<br>should service owners agree?</li><li data-build="3">Who responds, backs up and coordinates major incidents,<br>and who updates affected users?</li><li data-build="4">Where will we track incidents, recurring problems<br>and improvement actions, with the right data access?</li></ol><p class="end-note" data-build="5">Next step: agree the first scope, assign owners and run a controlled incident trial.</p></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide title-slide" aria-labelledby="title58" data-title="Microsoft Entra ID and privileged access">
+  <div class="slide-label">TrekAI</div>
+  <h1 id="title58">Microsoft Entra ID<br>and privileged access</h1>
+  <p class="subtitle">GitHub, Google Cloud and PAM<br>Current setup, proposed setup and rollout plan</p>
+  <p class="proposal">Topic 06</p>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title59" data-title="Current setup">
+<h2 id="title59">Current setup</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:25%"><col style="width:75%"></colgroup><thead><tr><th>Area</th><th>What we know and need to confirm</th></tr></thead><tbody><tr data-build="1"><td>GitHub</td><td>Repositories, teams and direct access already exist.<br>Confirm the account model, plan, sign-in and effective access.</td></tr><tr data-build="2"><td>Google Cloud</td><td>Access comes through IAM roles, groups and direct grants.<br>Review inherited access and service-account impersonation too.</td></tr><tr data-build="3"><td>PAM</td><td>RD Google Cloud entitlements were created previously.<br>Their full request, access and expiry behavior still needs testing.</td></tr><tr data-build="4"><td>Entra ID</td><td>Confirm the tenant, licenses, groups and existing integrations<br>before selecting the sign-in and provisioning setup.</td></tr></tbody></table><p class="wide-note" data-build="5">Start with an access inventory. Keep existing administrative recovery available.</p></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title60" data-title="Proposed access model">
+<h2 id="title60">Proposed access model</h2>
+<div class="body"><div class="flow" aria-label="Proposed workforce access model"><div class="node" data-build="1"><span class="step-no">1</span><strong>Sign in with Entra</strong><p>Entra verifies the person<br>and applies the agreed<br>MFA and sign-in rules.</p></div><div class="connector" data-build="2" aria-hidden="true">→</div><div class="node" data-build="2"><span class="step-no">2</span><strong>Use approved groups</strong><p>Team and task groups<br>define approved<br>membership.</p></div><div class="connector" data-build="3" aria-hidden="true">→</div><div class="node" data-build="3"><span class="step-no">3</span><strong>Apply platform roles</strong><p>GitHub and Google IAM<br>grant the agreed access<br>to specific resources.</p></div><div class="connector" data-build="4" aria-hidden="true">→</div><div class="node final" data-build="4"><span class="step-no">4</span><strong>Elevate when needed</strong><p>Request extra access<br>for a specific task<br>and limited duration.</p></div></div><div class="two-text"><div data-build="5"><h3>Sign-in and permission are separate</h3><p>Entra verifies identity. The target platform<br>decides which resources and actions are allowed.</p></div><div data-build="6"><h3>Keep automation separately controlled</h3><p>Review GitHub Apps, CI and service accounts<br>through their own identity and permission model.</p></div></div></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title61" data-title="Normal access by team and task">
+<h2 id="title61">Normal access by team and task</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:24%"><col style="width:39%"><col style="width:37%"></colgroup><thead><tr><th>Example task</th><th>Normal access</th><th>Extra access when needed</th></tr></thead><tbody><tr data-build="1"><td>QA testing</td><td>Use agreed test environments<br>and inspect allowed diagnostics.</td><td>A separate approved task<br>for sensitive or production data.</td></tr><tr data-build="2"><td>Application development</td><td>Work on approved repositories<br>and development resources.</td><td>Scoped production diagnosis<br>or a specific admin task.</td></tr><tr data-build="3"><td>DevOps operations</td><td>Operate agreed non-production<br>systems and delivery tooling.</td><td>A defined production change<br>or privileged recovery task.</td></tr></tbody></table><div class="statement" data-build="4">Agree the smallest useful role for each task and resource.<br>Give groups clear names, owners and membership rules.</div></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title62" data-title="GitHub: sign-in and account model">
+<h2 id="title62">GitHub: sign-in and account model</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:30%"><col style="width:70%"></colgroup><thead><tr><th>Option or control</th><th>Proposed approach</th></tr></thead><tbody><tr data-build="1"><td>Personal accounts with SSO</td><td>Keep normal GitHub sign-in. Add Entra SAML SSO<br>for organization access where the GitHub plan supports it.</td></tr><tr data-build="2"><td>Enterprise Managed Users</td><td>Entra provisions and manages work accounts.<br>Assess migration and collaboration requirements before choosing it.</td></tr><tr data-build="3"><td>Repository permissions</td><td>Map approved Entra groups to GitHub teams.<br>Give each team explicit roles on the agreed repositories.</td></tr></tbody></table><div class="statement" data-build="4">Choose the supported account model and confirm licensing first.<br>Keep restricted source and code-review rules protected.</div></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title63" data-title="GitHub: how we get there">
+<h2 id="title63">GitHub: how we get there</h2>
+<div class="body"><div class="flow" aria-label="GitHub identity rollout"><div class="node" data-build="1"><span class="step-no">1</span><strong>Review access</strong><p>List members, teams,<br>repository roles<br>and direct grants.</p></div><div class="connector" data-build="2" aria-hidden="true">→</div><div class="node" data-build="2"><span class="step-no">2</span><strong>Agree the model</strong><p>Choose sign-in,<br>account provisioning<br>and group mappings.</p></div><div class="connector" data-build="3" aria-hidden="true">→</div><div class="node" data-build="3"><span class="step-no">3</span><strong>Pilot one group</strong><p>Use a small group<br>and a suitable repository.<br>Test the mapped role.</p></div><div class="connector" data-build="4" aria-hidden="true">→</div><div class="node final" data-build="4"><span class="step-no">4</span><strong>Verify the lifecycle</strong><p>Test web, Git and CLI/API<br>access, group changes<br>and access removal.</p></div></div><div class="two-text"><div data-build="5"><h3>Provisioning must match the model</h3><p>Account creation and organization membership<br>need their own supported setup.</p></div><div data-build="6"><h3>Review all routes to access</h3><p>Check base permissions, direct access,<br>tokens and SSH keys as well as teams.</p></div></div></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title64" data-title="Google Cloud: connecting Entra ID">
+<h2 id="title64">Google Cloud: connecting Entra ID</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:32%"><col style="width:68%"></colgroup><thead><tr><th>Integration option</th><th>How it works</th></tr></thead><tbody><tr data-build="1"><td>Cloud Identity or Workspace</td><td>Provision or match managed Google accounts and groups.<br>Use Entra for single sign-on, with Google IAM permissions.</td></tr><tr data-build="2"><td>Workforce Identity Federation</td><td>Use Entra identities directly through a workforce pool.<br>Map approved groups or identity attributes to Google IAM.</td></tr><tr data-build="3"><td>Selection check</td><td>Compare existing accounts, required services, console and CLI.<br>Test identity mapping, access removal and PAM with real users.</td></tr></tbody></table><div class="statement" data-build="4">Choose one supported model for the first group and cloud scope.<br>GitHub Actions and workloads use a separate workload identity setup.</div></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title65" data-title="Google Cloud: how we get there">
+<h2 id="title65">Google Cloud: how we get there</h2>
+<div class="body"><div class="flow" aria-label="Google Cloud identity rollout"><div class="node" data-build="1"><span class="step-no">1</span><strong>Review identities</strong><p>Map users, groups,<br>existing IAM roles<br>and resource scope.</p></div><div class="connector" data-build="2" aria-hidden="true">→</div><div class="node" data-build="2"><span class="step-no">2</span><strong>Connect Entra</strong><p>Configure the selected<br>trust, provisioning<br>and group mappings.</p></div><div class="connector" data-build="3" aria-hidden="true">→</div><div class="node" data-build="3"><span class="step-no">3</span><strong>Assign scoped roles</strong><p>Grant approved groups<br>only the roles needed<br>for their normal tasks.</p></div><div class="connector" data-build="4" aria-hidden="true">→</div><div class="node final" data-build="4"><span class="step-no">4</span><strong>Prove the result</strong><p>Test console and CLI,<br>required services<br>and denied actions.</p></div></div><div class="two-text"><div data-build="5"><h3>Check effective permissions</h3><p>Include direct and inherited roles,<br>multiple groups and impersonation paths.</p></div><div data-build="6"><h3>Preserve administrative recovery</h3><p>Test an emergency access method<br>before retiring the old sign-in path.</p></div></div></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title66" data-title="Joining, moving and leaving">
+<h2 id="title66">Joining, moving and leaving</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:28%"><col style="width:72%"></colgroup><thead><tr><th>Change</th><th>What must happen</th></tr></thead><tbody><tr data-build="1"><td>Join the team</td><td>Approve the role and groups. Provision the required accounts.<br>Verify access to the intended repositories and cloud resources.</td></tr><tr data-build="2"><td>Move to a new role</td><td>Review the old and new permissions together.<br>Remove access no longer needed, including temporary eligibility.</td></tr><tr data-build="3"><td>Leave the organization</td><td>Disable access and remove membership and eligibility.<br>Check target accounts, direct grants, credentials and sessions.</td></tr></tbody></table><div class="statement" data-build="4">Measure how long changes take in each platform.<br>Confirm effective removal rather than relying on the Entra group alone.</div></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title67" data-title="Normal access and temporary elevation">
+<h2 id="title67">Normal access and temporary elevation</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:31%"><col style="width:69%"></colgroup><thead><tr><th>Term</th><th>What it means</th></tr></thead><tbody><tr data-build="1"><td>Normal access</td><td>The approved permissions needed for everyday work.</td></tr><tr data-build="2"><td>Entitlement or eligibility</td><td>A predefined task, resource scope, role, duration and approval rule.<br>Eligible people can request or activate it.</td></tr><tr data-build="3"><td>Temporary grant</td><td>One approved period of extra access.<br>Verify the intended action works, then verify access ends.</td></tr></tbody></table><div class="statement" data-build="4">PAM means Privileged Access Management.<br>Temporary access still follows the normal change and incident rules.</div></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title68" data-title="PAM: the mechanism for each platform">
+<h2 id="title68">PAM: the mechanism for each platform</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:29%"><col style="width:71%"></colgroup><thead><tr><th>Platform</th><th>Proposed implementation</th></tr></thead><tbody><tr data-build="1"><td>Google Cloud</td><td>Use Google Cloud Privileged Access Manager entitlements<br>for supported IAM roles at the agreed resource scope.</td></tr><tr data-build="2"><td>GitHub</td><td>Evaluate Entra PIM for Groups with the selected GitHub mapping.<br>Prove team-role activation, expiry and removal timing in a pilot.</td></tr><tr data-build="3"><td>Entra administration</td><td>Use Entra Privileged Identity Management (PIM)<br>for eligible directory admin roles where supported.</td></tr></tbody></table><div class="statement" data-build="4">Google Cloud PAM manages Google IAM access.<br>GitHub needs its own tested elevation path.</div></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title69" data-title="Example: temporary production log access">
+<h2 id="title69">Example: temporary production log access</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:31%"><col style="width:69%"></colgroup><thead><tr><th>Part of the entitlement</th><th>Example to review</th></tr></thead><tbody><tr data-build="1"><td>Resource and role</td><td>Logs Viewer on one approved production project.<br>Keep this extra access outside the user’s normal permissions.</td></tr><tr data-build="2"><td>Eligible requester</td><td>The approved support group, with a named resource owner.</td></tr><tr data-build="3"><td>Approval and duration</td><td>A request linked to a task or incident, with justification.<br>A designated approver authorizes up to 30 minutes.</td></tr><tr data-build="4"><td>Verification</td><td>Confirm allowed log access during the grant.<br>After it ends, confirm that extra access is denied.</td></tr></tbody></table><p class="wide-note" data-build="5">Illustrative example. The exact role, data scope, approver and duration need agreement.</p></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title70" data-title="How temporary access works">
+<h2 id="title70">How temporary access works</h2>
+<div class="body"><div class="flow" aria-label="Temporary privileged access lifecycle"><div class="node" data-build="1"><span class="step-no">1</span><strong>Choose the task</strong><p>Select an eligible role<br>and resource. Request<br>only the time needed.</p></div><div class="connector" data-build="2" aria-hidden="true">→</div><div class="node" data-build="2"><span class="step-no">2</span><strong>Review the request</strong><p>Check the reason,<br>scope and identity.<br>Apply the approval rule.</p></div><div class="connector" data-build="3" aria-hidden="true">→</div><div class="node" data-build="3"><span class="step-no">3</span><strong>Activate and verify</strong><p>Confirm the extra action<br>works only within<br>the approved scope.</p></div><div class="connector" data-build="4" aria-hidden="true">→</div><div class="node final" data-build="4"><span class="step-no">4</span><strong>End and verify</strong><p>Let access expire or<br>end it early. Check<br>that elevation is gone.</p></div></div><div class="two-text"><div data-build="5"><h3>If activation fails</h3><p>Hold the privileged task. Fix the mapping<br>or provisioning issue and verify again.</p></div><div data-build="6"><h3>If access still works afterwards</h3><p>Stop privileged work and investigate remaining<br>grants, groups, credentials or sessions.</p></div></div></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title71" data-title="How we prove access works">
+<h2 id="title71">How we prove access works</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:30%"><col style="width:70%"></colgroup><thead><tr><th>Test</th><th>Expected result</th></tr></thead><tbody><tr data-build="1"><td>Normal work</td><td>The user can perform agreed daily tasks.<br>Restricted resources and elevated actions remain denied.</td></tr><tr data-build="2"><td>Pending or declined request</td><td>The request adds no extra access.</td></tr><tr data-build="3"><td>Approved activation</td><td>Only the approved role and resource become available.<br>Audit records identify the requester, approval and grant.</td></tr><tr data-build="4"><td>Expiry or removal</td><td>The elevated action becomes denied while valid normal access remains.<br>Measure propagation delays and test early ending too.</td></tr></tbody></table><p class="wide-note" data-build="5">Test human sign-in with real pilot users. A service-account test cannot prove that experience.</p></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title72" data-title="How we get there">
+<h2 id="title72">How we get there</h2>
+<div class="body"><table class="table rollout"><colgroup><col style="width:23%"><col style="width:43%"><col style="width:34%"></colgroup><thead><tr><th>Phase</th><th>Work to complete</th><th>Ready to continue when</th></tr></thead><tbody><tr data-build="1"><td>1. Agree the access model</td><td>Inventory identities and permissions.<br>Choose roles, integrations and owners.</td><td>The first users, tasks<br>and resource scopes are clear.</td></tr><tr data-build="2"><td>2. Pilot normal access</td><td>Connect a small group to GitHub<br>and an agreed Google Cloud scope.</td><td>Required tasks and access<br>removal work as agreed.</td></tr><tr data-build="3"><td>3. Pilot temporary access</td><td>Test a narrow Google PAM entitlement<br>and the GitHub elevation candidate.</td><td>Activation, denial, expiry<br>and audit checks pass.</td></tr><tr data-build="4"><td>4. Expand and maintain</td><td>Migrate in groups. Remove replaced grants<br>after validation and review access regularly.</td><td>Owners can support, review<br>and recover the access model.</td></tr></tbody></table><p class="wide-note" data-build="5">Test emergency access, departure handling and expired elevation before wider rollout.</p></div>
+</section>
+<section data-topic="06 Microsoft Entra ID and privileged access" class="slide" aria-labelledby="title73" data-title="Decisions for the team">
+<h2 id="title73">Decisions for the team</h2>
+<div class="body"><ol class="question-list"><li data-build="1">Which GitHub account model and Google Cloud identity integration<br>fit our existing setup and licenses?</li><li data-build="2">Which tasks need normal access,<br>and which need temporary elevation?</li><li data-build="3">Who owns each group and entitlement, who approves requests,<br>and what duration and emergency rules should apply?</li><li data-build="4">Which users, repositories and cloud scope should we pilot first?</li></ol><p class="end-note" data-build="5">Next step: agree the first scope with identity, platform and resource owners.</p></div>
+</section>
+<section data-topic="07 Documentation" class="slide title-slide" aria-labelledby="title74" data-title="Documentation">
+  <div class="slide-label">TrekAI</div>
+  <h1 id="title74">Documentation</h1>
+  <p class="subtitle">Where it is today, how we organize it<br>and how the DevOps team keeps it current</p>
+  <p class="proposal">Topic 07</p>
+</section>
+<section data-topic="07 Documentation" class="slide" aria-labelledby="title75" data-title="Documentation: where it is today">
+<h2 id="title75">Documentation: where it is today</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:25%"><col style="width:75%"></colgroup><thead><tr><th>Location</th><th>What is there</th></tr></thead><tbody><tr data-build="1"><td>Confluence</td><td>Trek-Learning (New) holds architecture and operating guides.<br>Content sits in Arch & Infra, older pages and Operations & Runbooks.</td></tr><tr data-build="2"><td>GitHub</td><td>Repository READMEs and instructions sit beside the code.<br>Terraform and deployment details are spread across repositories.</td></tr><tr data-build="3"><td>2nd Brain</td><td>Collected documentation, system explanations and review notes.<br>Use it to find context; check which guidance is approved and current.</td></tr></tbody></table><div class="statement" data-build="4">Useful documentation already exists in several places.<br>The team needs a clear starting point and one primary guide for each task.</div></div>
+</section>
+<section data-topic="07 Documentation" class="slide" aria-labelledby="title76" data-title="Documentation: what needs to improve">
+<h2 id="title76">Documentation: what needs to improve</h2>
+<div class="body"><ul class="bullets"><li data-build="1">The Operations & Runbooks structure already exists,<br>but reviewed content still needs to be moved or linked into it.</li><li data-build="2">The Deployment & Release index still has no assigned owner.</li><li data-build="3">Some guidance describes older workflows.<br>Check instructions against the code and actual operating process.</li><li data-build="4">Confirm which guides are missing, duplicated or hard to find<br>before deciding what to rewrite.</li></ul></div>
+</section>
+<section data-topic="07 Documentation" class="slide" aria-labelledby="title77" data-title="Documentation: where we want it to live">
+<h2 id="title77">Documentation: where we want it to live</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:30%"><col style="width:70%"></colgroup><thead><tr><th>Location</th><th>Proposed responsibility</th></tr></thead><tbody><tr data-build="1"><td>Confluence: DevOps home</td><td>The starting point for architecture, team standards and runbooks.<br>Link each topic to its primary maintained guide.</td></tr><tr data-build="2"><td>GitHub: beside the code</td><td>Keep version-specific setup, module and workflow instructions<br>with their repository. Review them in the same pull request.</td></tr><tr data-build="3"><td>2nd Brain: supporting knowledge</td><td>Keep research, explanations and review history available.<br>Review useful material before promoting it into team guidance.</td></tr></tbody></table><div class="statement" data-build="4">Keep one maintained copy of each guide and link to it.<br>Use existing tools and preserve the agreed access boundaries.</div></div>
+</section>
+<section data-topic="07 Documentation" class="slide" aria-labelledby="title78" data-title="What the DevOps home should cover">
+<h2 id="title78">What the DevOps home should cover</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:28%"><col style="width:72%"></colgroup><thead><tr><th>Area</th><th>What the team should find</th></tr></thead><tbody><tr data-build="1"><td>Systems and environments</td><td>Hub/LMS, CAP/TrekFinder, dependencies, architecture<br>and development, QA, staging and production boundaries.</td></tr><tr data-build="2"><td>Delivery and infrastructure</td><td>Repository layout, Terraform, CI/CD, GitOps,<br>release checks, promotion and rollback.</td></tr><tr data-build="3"><td>Daily operations</td><td>QA setup and cleanup, monitoring, incident response,<br>recovery, access requests and temporary elevation.</td></tr><tr data-build="4"><td>Team reference</td><td>Onboarding, owners, support contacts and agreed standards.<br>Link the right repository, dashboard and task record.</td></tr></tbody></table><p class="wide-note" data-build="5">Build on the existing Architecture and Operations & Runbooks sections.</p></div>
+</section>
+<section data-topic="07 Documentation" class="slide" aria-labelledby="title79" data-title="What every operating guide should include">
+<h2 id="title79">What every operating guide should include</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:29%"><col style="width:71%"></colgroup><thead><tr><th>Part of the guide</th><th>What the reader needs</th></tr></thead><tbody><tr data-build="1"><td>Purpose and scope</td><td>The task, product, environment and applicable version.</td></tr><tr data-build="2"><td>Access and preparation</td><td>Required permissions, inputs and checks before starting.<br>Use secret references instead of credential values.</td></tr><tr data-build="3"><td>Steps and outcome</td><td>Clear steps, expected results and how to verify success.<br>Explain when to stop and how to recover or roll back.</td></tr><tr data-build="4"><td>Ownership and status</td><td>A named owner, reviewer, status and review date.<br>Record when the procedure was last successfully tested.</td></tr></tbody></table><p class="wide-note" data-build="5">Keep proposed designs clearly separate from instructions approved for use.</p></div>
+</section>
+<section data-topic="07 Documentation" class="slide" aria-labelledby="title80" data-title="How documentation changes">
+<h2 id="title80">How documentation changes</h2>
+<div class="body"><div class="flow" aria-label="Documentation update workflow"><div class="node" data-build="1"><span class="step-no">1</span><strong>Identify the change</strong><p>A system change, incident<br>or reader finds a gap.<br>Assign a guide owner.</p></div><div class="connector" data-build="2" aria-hidden="true">→</div><div class="node" data-build="2"><span class="step-no">2</span><strong>Update the guide</strong><p>Write clear instructions.<br>Link the related change<br>and affected version.</p></div><div class="connector" data-build="3" aria-hidden="true">→</div><div class="node" data-build="3"><span class="step-no">3</span><strong>Review and try it</strong><p>A domain reviewer checks it.<br>Another engineer follows<br>the procedure safely.</p></div><div class="connector" data-build="4" aria-hidden="true">→</div><div class="node final" data-build="4"><span class="step-no">4</span><strong>Publish and link</strong><p>Publish the approved guide.<br>Update the DevOps index<br>and replacement links.</p></div></div><div class="two-text"><div data-build="5"><h3>Include docs in the change</h3><p>Check documentation impact in PRs and releases.<br>Required guides must be ready before handoff.</p></div><div data-build="6"><h3>If review or testing fails</h3><p>Fix the guide and repeat the check.<br>Keep unverified instructions marked as draft.</p></div></div></div>
+</section>
+<section data-topic="07 Documentation" class="slide" aria-labelledby="title81" data-title="How we keep documentation current">
+<h2 id="title81">How we keep documentation current</h2>
+<div class="body"><table class="table summary-table"><colgroup><col style="width:30%"><col style="width:70%"></colgroup><thead><tr><th>Trigger</th><th>Proposed maintenance rule</th></tr></thead><tbody><tr data-build="1"><td>A system or access change</td><td>The change owner updates affected guides and links.<br>The reviewer checks documentation before closing the work.</td></tr><tr data-build="2"><td>An incident or reader problem</td><td>Record the gap in a task, assign an owner and fix it.<br>Update the runbook with the tested resolution or workaround.</td></tr><tr data-build="3"><td>A scheduled review</td><td>Propose monthly checks for critical runbooks<br>and quarterly checks for reference pages. Agree this with owners.</td></tr><tr data-build="4"><td>An obsolete or unowned page</td><td>Mark its status clearly. Assign it, correct it or archive it.<br>Point old links to the replacement and escalate overdue work.</td></tr></tbody></table><p class="wide-note" data-build="5">DevOps coordinates the index; each system owner is accountable for their guides.</p></div>
+</section>
+<section data-topic="07 Documentation" class="slide" aria-labelledby="title82" data-title="First example: a temporary QA environment">
+<h2 id="title82">First example: a temporary QA environment</h2>
+<div class="body"><div class="flow" aria-label="First documentation pilot"><div class="node" data-build="1"><span class="step-no">1</span><strong>Select a release</strong><p>Choose the product,<br>release manifest, owner<br>and test purpose.</p></div><div class="connector" data-build="2" aria-hidden="true">→</div><div class="node" data-build="2"><span class="step-no">2</span><strong>Create the setup</strong><p>Use the approved workflow.<br>Check permissions,<br>readiness and isolation.</p></div><div class="connector" data-build="3" aria-hidden="true">→</div><div class="node" data-build="3"><span class="step-no">3</span><strong>Test and recover</strong><p>Run the agreed tests.<br>Explain failed setup,<br>reset and escalation.</p></div><div class="connector" data-build="4" aria-hidden="true">→</div><div class="node final" data-build="4"><span class="step-no">4</span><strong>End the environment</strong><p>Follow expiry or retention.<br>Verify cleanup and<br>check remaining cost.</p></div></div><div class="two-text"><div data-build="5"><h3>Write against the agreed workflow</h3><p>Include the tested version, access, inputs,<br>expected results and failure handling.</p></div><div data-build="6"><h3>Prove another person can use it</h3><p>A second engineer follows the guide in QA.<br>Fix unclear steps before marking it maintained.</p></div></div></div>
+</section>
+<section data-topic="07 Documentation" class="slide" aria-labelledby="title83" data-title="Documentation: how we get there">
+<h2 id="title83">Documentation: how we get there</h2>
+<div class="body"><table class="table rollout"><colgroup><col style="width:23%"><col style="width:43%"><col style="width:34%"></colgroup><thead><tr><th>Phase</th><th>Work to complete</th><th>Ready to continue when</th></tr></thead><tbody><tr data-build="1"><td>1. Inventory and prioritize</td><td>List existing guides, locations and gaps.<br>Start with frequent and high-impact tasks.</td><td>We know which guide is primary<br>and what needs work first.</td></tr><tr data-build="2"><td>2. Agree the structure</td><td>Confirm the DevOps home, owners,<br>template and review rules.</td><td>Each priority topic has<br>an owner and a clear location.</td></tr><tr data-build="3"><td>3. Prove one guide</td><td>Write the QA environment guide.<br>Have another engineer use it.</td><td>The reader completes the task<br>and verifies the result.</td></tr><tr data-build="4"><td>4. Expand and maintain</td><td>Add release, recovery and access guides.<br>Track reviews and resolve stale pages.</td><td>Guides follow system changes<br>and overdue work has an owner.</td></tr></tbody></table><p class="wide-note" data-build="5">Measure whether people can find and use the guide, alongside review and gap closure.</p></div>
+</section>
+<section data-topic="07 Documentation" class="slide" aria-labelledby="title84" data-title="Documentation: decisions for the team">
+<h2 id="title84">Documentation: decisions for the team</h2>
+<div class="body"><ol class="question-list"><li data-build="1">Can we use Confluence as the DevOps starting point,<br>with code-specific instructions maintained in GitHub?</li><li data-build="2">Which tasks should we document first,<br>and who owns and reviews each guide?</li><li data-build="3">Which guides must be ready before a release or handoff,<br>and what review schedule can the team maintain?</li><li data-build="4">Who will trial the first QA guide<br>and help resolve gaps or conflicting instructions?</li></ol><p class="end-note" data-build="5">Next step: agree the home and owners, then prove the first operating guide.</p></div>
+</section>
+</div></div>
+</main>
+<nav class="controls" aria-label="Presentation controls">
+<button id="prev" aria-label="Previous point or slide" title="Previous (←)">‹</button>
+<span class="count" id="counter">01 / 84</span>
+<button id="next" aria-label="Next point or slide" title="Next (→ or Space)">›</button>
+<button class="fullscreen" id="fullscreen" aria-label="Enter fullscreen" title="Fullscreen (F)">⛶</button>
+<button class="topics-button" id="topicsButton" aria-label="Open presentation topics" title="Topics (T)">Topics</button>
+<button class="help-button" id="helpButton" aria-label="Show presentation shortcuts" aria-expanded="false" title="Shortcuts (?)">?</button>
+</nav>
+<div class="build-hint" id="buildHint">Click or press → to continue</div>
+<div class="help">← → Navigate &nbsp; T Topics &nbsp; F Fullscreen</div>
+<aside class="help-panel" id="helpPanel" hidden><strong>Presentation controls</strong><br>Click, → or Space: reveal the next point<br>←: go back one point<br>Page Down / Page Up: next / previous slide<br>Home / End: first / last slide<br>A: show the complete slide<br>R: replay the current slide<br>T: presentation topics<br>F: fullscreen &nbsp; Esc: close help</aside>
+<div class="a11y-status" id="status" aria-live="polite"></div>
+<script>
+(()=>{'use strict';
+const slides=[...document.querySelectorAll('.slide')],deck=document.getElementById('deck'),frame=document.getElementById('frame');
+const prev=document.getElementById('prev'),next=document.getElementById('next'),counter=document.getElementById('counter'),hint=document.getElementById('buildHint'),status=document.getElementById('status');
+const helpPanel=document.getElementById('helpPanel'),helpButton=document.getElementById('helpButton');
+let index=0,build=0,touch=null,scale=1;
+const maxBuild=()=>Math.max(0,...[...slides[index].querySelectorAll('[data-build]')].map(e=>Number(e.dataset.build)));
+function resize(){const availableW=Math.max(100,window.innerWidth-(window.innerWidth<=750?16:48));const availableH=Math.max(100,window.innerHeight-(window.innerWidth<=750?77:94));scale=Math.min(availableW/1600,availableH/900);frame.style.width=1600*scale+'px';frame.style.height=900*scale+'px';deck.style.transform=`scale(${scale})`;}
+function update(){slides.forEach((slide,i)=>{const active=i===index;slide.classList.toggle('active',active);slide.setAttribute('aria-hidden',String(!active));slide.inert=!active;if(active){slide.classList.toggle('build-complete',build===maxBuild());slide.querySelectorAll('[data-build]').forEach(el=>{const shown=Number(el.dataset.build)<=build;el.classList.toggle('shown',shown);el.setAttribute('aria-hidden',String(!shown));el.inert=!shown;})}});counter.textContent=`${String(index+1).padStart(2,'0')} / ${slides.length}`;prev.disabled=index===0&&build===0;next.disabled=index===slides.length-1&&build===maxBuild();hint.textContent=build<maxBuild()?'Click or press → to show the next point':index<slides.length-1?'Click or press → for the next slide':'End of presentation';status.textContent=`Slide ${index+1}: ${slides[index].dataset.title}${maxBuild()?`, point ${build} of ${maxBuild()}`:''}`;document.title=`TrekAI — ${slides[index].dataset.title}`;try{history.replaceState(null,'',`#slide-${index+1}`)}catch{}}
+function go(i,complete=false){index=Math.max(0,Math.min(slides.length-1,i));build=complete?maxBuild():0;update();}
+function forward(){if(build<maxBuild()){build++;update()}else if(index<slides.length-1)go(index+1);}
+function back(){if(build>0){build--;update()}else if(index>0)go(index-1,true);}
+function toggleHelp(){helpPanel.hidden=!helpPanel.hidden;helpButton.setAttribute('aria-expanded',String(!helpPanel.hidden));}
+async function fullscreen(){try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else{helpPanel.hidden=false;helpButton.setAttribute('aria-expanded','true');}}catch{helpPanel.hidden=false;helpButton.setAttribute('aria-expanded','true');}}
+prev.addEventListener('click',back);next.addEventListener('click',forward);document.getElementById('fullscreen').addEventListener('click',fullscreen);helpButton.addEventListener('click',toggleHelp);document.getElementById('topicsButton').addEventListener('click',()=>go(1,true));
+deck.addEventListener('click',e=>{const topic=e.target.closest('a[data-slide]');if(topic){e.preventDefault();go(Number(topic.dataset.slide));return;}if(!helpPanel.hidden){helpPanel.hidden=true;helpButton.setAttribute('aria-expanded','false');return;}forward();});
+document.addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;if(e.key==='Escape'){helpPanel.hidden=true;helpButton.setAttribute('aria-expanded','false');return;}if(e.key==='?'||e.key.toLowerCase()==='h'){e.preventDefault();toggleHelp();return;}if(!helpPanel.hidden)return;if(e.key==='ArrowRight'||e.key==='ArrowDown'||(e.key===' '&&!e.target.closest('button'))||e.key==='Enter'&&e.target===document.body){e.preventDefault();forward();}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();back();}else if(e.key==='PageDown'){e.preventDefault();go(index+1);}else if(e.key==='PageUp'){e.preventDefault();go(index-1);}else if(e.key==='Home'){e.preventDefault();go(0);}else if(e.key==='End'){e.preventDefault();go(slides.length-1,true);}else if(e.key.toLowerCase()==='a'){build=maxBuild();update();}else if(e.key.toLowerCase()==='r'){build=0;update();}else if(e.key.toLowerCase()==='t'){e.preventDefault();go(1,true);}else if(e.key.toLowerCase()==='f'){e.preventDefault();fullscreen();}});
+deck.addEventListener('touchstart',e=>{touch=[e.changedTouches[0].clientX,e.changedTouches[0].clientY];},{passive:true});deck.addEventListener('touchend',e=>{if(!touch)return;const dx=e.changedTouches[0].clientX-touch[0],dy=e.changedTouches[0].clientY-touch[1];if(Math.abs(dx)>60&&Math.abs(dy)<40){e.preventDefault();dx<0?forward():back();}touch=null;},{passive:false});
+document.addEventListener('fullscreenchange',()=>document.getElementById('fullscreen').setAttribute('aria-label',document.fullscreenElement?'Exit fullscreen':'Enter fullscreen'));
+window.addEventListener('resize',resize);window.addEventListener('hashchange',()=>{const m=location.hash.match(/^#slide-(\d+)$/);if(m&&Number(m[1])-1!==index)go(Number(m[1])-1);});
+slides.forEach((slide,i)=>{const footer=document.createElement('footer');footer.className='slide-footer';const brand=document.createElement('span');brand.textContent='TrekAI';const num=document.createElement('span');num.textContent=String(i+1);footer.append(brand,num);slide.append(footer);});
+const start=location.hash.match(/^#slide-(\d+)$/);resize();go(start?Number(start[1])-1:0);
+})();
+</script>
+</body>
+</html>

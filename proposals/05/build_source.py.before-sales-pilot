@@ -1,0 +1,170 @@
+"""Build initial Proposal 05 as editable native Miro widgets.
+
+Use returned live IDs for edits. Do not recreate this source on the same board.
+"""
+from pathlib import Path
+import xml.etree.ElementTree as E
+
+P=Path(__file__).parent;NS="http://www.w3.org/2000/svg"
+E.register_namespace("",NS)
+svg=E.Element(f"{{{NS}}}svg",{"width":"11600","height":"17600"})
+colors={"context":("#ddddd8","#a8a8a0","#434339"),
+        "proposal":("#a0c4fb","#6a8bbf","#14315e"),
+        "decision":("#ffe86d","#cbb333","#574900")}
+
+def el(p,tag,**a):
+    return E.SubElement(p,f"{{{NS}}}{tag}",{k.replace('_','-'):str(v) for k,v in a.items()})
+def text(p,key,x,y,w,body,size=22,bold=False):
+    e=el(p,"textArea",id=key,x=x,y=y,width=w,height=64 if size==33 else 40,
+         fill="#1a1a1a" if bold else "#595959",font_family="noto_sans",font_size=size,
+         text_align="left",font_weight="bold" if bold else "normal")
+    e.text=body;return e
+def card(p,key,x,y,w,h,body,kind="proposal"):
+    fill,stroke,ink=colors[kind]
+    return el(p,"rect",id=key,x=x,y=y,width=w,height=h,data_content=body,fill=fill,
+              stroke=stroke,stroke_width=2,data_text_color=ink,data_font_family="noto_sans",
+              data_font_size=22,data_text_align="left",data_text_align_vertical="middle")
+def link(p,key,a,b,label="",start="right",end="left"):
+    def point(e,s):
+        x,y,w,h=[float(e.get(k)) for k in ("x","y","width","height")]
+        return {"left":(x,y+h/2),"right":(x+w,y+h/2),"top":(x+w/2,y),"bottom":(x+w/2,y+h)}[s]
+    x1,y1=point(a,start);x2,y2=point(b,end)
+    return el(p,"line",id=key,x1=x1,y1=y1,x2=x2,y2=y2,data_start=a.get("id"),data_end=b.get("id"),
+              data_start_side=start,data_end_side=end,stroke="#313131",stroke_width=2,
+              data_arrow="end",data_shape="elbowed",data_content=label)
+def frame(key,x,title,subtitle):
+    f=el(svg,"g",id=key,transform=f"translate({x},15500)",data_frame=title)
+    el(f,"rect",data_type="frame",x=0,y=0,width=3152,height=1910,fill="#ffffff",data_title=title)
+    text(f,key+"-title",64,64,3024,title,33,True)
+    text(f,key+"-subtitle",64,148,3024,subtitle)
+    text(f,key+"-legend",64,1750,3024,"Blue = proposed | Gray = saved evidence or context | Yellow = gate, exception or team decision",18)
+    return f
+
+f=frame("p05a",-2560,"05A QA environments and lab: proposal",
+        "CTO / QA / developers / DevOps | Draft | Give QA repeatable, test-specific environments with clear versions, ownership and lifecycle.")
+text(f,"a-current",64,244,880,"Saved baseline and the need raised by the team",bold=True)
+card(f,"a-tl",64,320,880,180,
+     "<b>Trek Learning (Hub/LMS)</b><br>Shared dev, staging and production environments.<br>Recorded as running in the Nov 2 cloud inventory.","context")
+card(f,"a-cap",64,532,880,180,
+     "<b>TrekCAP / TrekFinder</b><br>RD is the identified environment.<br>An on-demand QA lab workflow is not established.","context")
+card(f,"a-need",64,744,880,224,
+     "<b>Need discussed on Nov 12</b><br>QA must identify exactly what it is testing.<br>Provision through reusable code where approved.<br>Different tests or a quick POC may need separate labs.","decision")
+text(f,"a-proposed",1104,244,1984,"Proposed: QA selects a manifest and an approved lab profile",bold=True)
+card(f,"a-entry",1104,320,1984,160,
+     "<b>QA starts an approved provisioning workflow</b><br>Choose product, release versions, test purpose and a bounded profile.<br>Interface remains to agree: workflow/button or direct Terraform access.")
+text(f,"a-example-title",1104,544,1984,"Illustrative concurrent instances; quantity, size and isolation remain to agree",bold=True)
+for key,x,title,body in [
+    ("a-functional",1104,"Lab A: functional tests","Selected Hub/LMS services.<br>Approved test data and dependencies.<br>Readiness checks before QA starts."),
+    ("a-load",1776,"Lab B: load or resilience tests","Selected product and test profile.<br>Isolation suited to the test impact.<br>Agreed resource and duration bounds."),
+    ("a-poc",2448,"Lab C: rapid POC","Approved subset or alternate setup.<br>Track deviations from the baseline.<br>Named owner and an expiry policy."),
+]:card(f,key,x,608,608,256,f"<b>{title}</b><br>{body}")
+card(f,"a-isolation",1104,928,1984,160,
+     "<b>Choose isolation to match the test</b><br>Compare a lab in shared infrastructure with a dedicated project/cluster and data services.<br>Agree network, identity, state, test data and shared dependencies; a namespace alone may not meet every test need.","decision")
+for key,x,w,title in [("benefits",64,960,"Expected outcomes"),("manifest",1088,960,"Manifest fields to agree"),
+                      ("lifecycle",2112,976,"Controls and lifecycle")]:
+    text(f,"a-"+key+"-title",x,1180,w,title,bold=True)
+card(f,"a-benefits",64,1244,960,192,
+     "• Repeat a test against identifiable versions.<br>• Support different testing needs in parallel.<br>• Exercise provisioning and recreation from code.")
+card(f,"a-manifest",1088,1244,960,192,
+     "• Service images and infrastructure-template version.<br>• Settings, dependencies, schema and test-data profile.<br>• Owner, purpose, size, expiry and acceptance checks.<br>• References to secrets; no secret values in the manifest.","context")
+card(f,"a-lifecycle",2112,1244,976,192,
+     "• Scope execution access to the owned lab.<br>• Bound sizing, concurrency and allowed duration.<br>• Keep evidence, then verify managed cleanup.<br>• Assign failed-provisioning and cleanup ownership.","decision")
+card(f,"a-boundary",64,1500,3024,192,
+     '<b>Infrastructure, deployment and QA are separate handoffs</b><br>Terraform provisions the approved target; the chosen app deployment path installs the selected release and test setup. Readiness checks precede QA tests.<br>Use <a href="https://miro.com/app/board/uXjVEOGaQYU=/?moveToWidget=3458764690359619683">Proposal 01 apply controls</a>; consume approved artifacts from 03/04. Repository consolidation is not a prerequisite. Production promotion remains a separate release decision.',"context")
+text(f,"a-evidence",64,1810,3024,
+     "Basis: Nov 12 proposal discussion; environment/runtime snapshots Nov 2–3, 2026. Lab profiles, manifest, instances, controls and self-service automation are proposed.",18)
+
+f=frame("p05b",1275,"05B QA lab: request, provision, test and clean up",
+        "QA / automation / approvers / DevOps | Draft | Follow the numbered handoffs; request ownership, readiness and cleanup evidence stay with each instance.")
+for key,y,h,label in [("qa-request",264,224,"QA requests / feedback"),("provision",552,224,"Provisioning / approvals"),
+                       ("deploy",840,224,"Apps / readiness"),("qa-test",1128,224,"QA tests / evidence"),
+                       ("lifecycle",1416,256,"Lifecycle / DevOps")]:
+    el(f,"rect",id="b-lane-"+key,x=64,y=y,width=3024,height=h,fill="#f7f7f7",stroke="none")
+    text(f,"b-role-"+key,88,y+16,256,label,18,True)
+request=card(f,"b-request",440,280,640,192,
+             "<b>1. Select what to test [QA]</b><br>Choose a release manifest and lab profile.<br>Provide purpose, owner and requested lifetime.<br>Submit through the agreed interface.")
+invalid=card(f,"b-invalid",1272,280,640,192,
+             "<b>Incomplete or unauthorized request</b><br>Return clear findings to QA; do not provision.<br>Correct inputs or obtain the required approval.","decision")
+partial=card(f,"b-partial",2104,280,840,192,
+             "<b>Provisioning failed or only partly completed</b><br>Do not start testing or assume automatic rollback.<br>DevOps reconciles the owned resources and state.<br>Record recovery or cleanup actions.","decision")
+policy=card(f,"b-policy",440,568,640,192,
+            "<b>2. Validate the request [Automation]</b><br>Check profile, versions, access and limits.<br>Allocate an instance ID and ownership scope.<br>Confirm any required request approval.")
+plan=card(f,"b-plan",1272,568,640,192,
+          '<b>3. Review the final target plan</b><br>Select lab inputs and isolated state scope.<br>Authorize execution under the agreed policy.<br>Apply controls: <a href="https://miro.com/app/board/uXjVEOGaQYU=/?moveToWidget=3458764690359619683">01B</a> (review or approved policy).')
+apply=card(f,"b-apply",2104,568,840,192,
+           "<b>4. Provision infrastructure [Automation]</b><br>A scoped executor runs Terraform for this lab.<br>Verify resources and capture required outputs.<br>Stop on failed or partial apply.")
+deploy=card(f,"b-deploy",2104,856,840,192,
+            "<b>5. Deploy the selected release [Automation]</b><br>Deploy manifest versions and required dependencies.<br>Apply the agreed test schema and seed approved data.<br>Application deployment is separate from Terraform apply.")
+ready=card(f,"b-ready",1272,856,640,192,
+           "<b>6. Check lab readiness [Automation]</b><br>Verify settings, access and dependencies.<br>Match release versions and check health.<br>Hand over only a ready instance to QA.")
+not_ready=card(f,"b-not-ready",440,856,640,192,
+               "<b>Lab is not ready: hold QA testing</b><br>Return deployment/readiness diagnostics.<br>Assigned owners correct the setup.<br>Repeat the readiness checks.","decision")
+tests=card(f,"b-tests",1272,1144,640,192,
+           "<b>7. Run the selected tests [QA]</b><br>Use the manifest and instance ID.<br>Execute functional, load, recovery or POC tests.<br>Record failures as well as passes.")
+results=card(f,"b-results",2104,1144,840,192,
+             "<b>8. Save results and evidence [QA / Automation]</b><br>Record manifest, instance, versions and test outcomes.<br>Separate product defects from environment failures.<br>Retain agreed evidence before removing the lab.")
+card(f,"b-expiry",440,1432,1472,224,
+     "<b>Completion or expiry starts the agreed lifecycle policy</b><br>Track the owner, expiry, retention and any approved extension.<br>Keep shared/protected dependencies outside this lab’s teardown scope.<br>If cleanup fails, assign follow-up and track residual resources and cost.","context")
+cleanup=card(f,"b-cleanup",2104,1432,840,224,
+             "<b>9. Remove only the owned lab [Automation]</b><br>Stop/remove its deployment desired state.<br>Authorize and run target cleanup under the agreed policy.<br>Verify owned resources and record any residue.<br>Retain the agreed evidence and closure record.")
+link(f,"b-l1",request,policy,"Request","bottom","top")
+link(f,"b-l2",policy,plan,"Valid")
+link(f,"b-l3",plan,apply,"Authorized")
+link(f,"b-l4",apply,deploy,"Infra ready","bottom","top")
+link(f,"b-l5",deploy,ready,"Release installed","left","right")
+link(f,"b-l6",ready,tests,"Ready","bottom","top")
+link(f,"b-l7",tests,results,"Outcome")
+link(f,"b-l8",results,cleanup,"End / expiry","bottom","top")
+link(f,"b-invalid-link",policy,invalid,"Invalid / denied","top","bottom")
+link(f,"b-partial-link",apply,partial,"Failed / partial","top","bottom")
+link(f,"b-not-ready-link",ready,not_ready,"Not ready","left","right")
+text(f,"b-evidence",64,1810,3024,
+     "Proposed workflow, not an existing QA provisioning service. Interface, approvals, deployment engine, test data, isolation and expiry/cleanup policy require team agreement.",18)
+
+f=frame("p05c",5110,"05C QA lab: delivery plan and operating controls",
+        "QA / application teams / DevOps | Draft | Pilot one reproducible profile, verify failure and cleanup behavior, then expand to agreed testing needs.")
+text(f,"c-work",64,244,3024,"Proposed work packages",bold=True)
+phases=[]
+for key,x,title,body,owner in [
+    ("c-needs",64,"1. Agree what QA needs",
+     "List functional, load, recovery and POC scenarios.<br>Map services, dependencies and data needs.<br>Check which infrastructure can be recreated from code.","QA + application owners + DevOps"),
+    ("c-design",860,"2. Design the lab contract",
+     "Agree manifest, profiles and isolation.<br>Choose request access and execution approvals.<br>Define ownership, cost bounds, expiry and cleanup.","QA + DevOps + security owners"),
+    ("c-pilot",1656,"3. Prove a small pilot",
+     "Provision a lab from approved code and versions.<br>Run readiness and QA tests; capture evidence.<br>Remove and recreate it, including failure scenarios.","DevOps + QA + application owners"),
+    ("c-expand",2452,"4. Add the agreed profiles",
+     "Support concurrent instances where needed.<br>Add load/POC profiles after the pilot evidence.<br>Publish usage, support and cleanup guidance.","QA + DevOps"),
+]:
+    phases.append(card(f,key,x,328,636,256,f"<b>{title}</b><br>{body}"))
+    text(f,key+"-owner",x,616,636,"Proposed owner: "+owner,18)
+for i in range(3):link(f,"c-next-"+str(i),phases[i],phases[i+1],"Next")
+for key,x,y,title in [("proof",64,744,"Evidence before expanding"),("dependencies",1656,744,"Dependencies and integration work"),
+                      ("controls",64,1120,"Operating controls to agree"),("decisions",1656,1120,"Open design decisions")]:
+    text(f,"c-"+key+"-title",x,y,1432,title,bold=True)
+card(f,"c-proof",64,824,1432,224,
+     "• Recreate the selected infrastructure and release versions.<br>• Prove readiness, test-data setup and selected QA journeys.<br>• Exercise overlapping requests and failed/partial operations.<br>• Verify owned-resource cleanup and record any residue.","context")
+card(f,"c-dependencies",1656,824,1432,224,
+     "• Reviewed infrastructure modules, inputs, state and identities.<br>• Artifact access, app deployment path and dependency setup.<br>• Schema/seed fixtures, secret references and test identities.<br>• Evidence storage, cost visibility and cleanup reconciliation.","context")
+card(f,"c-controls",64,1200,1432,224,
+     "• Approved sizing, quotas, concurrency and allowed duration.<br>• Synthetic or explicitly approved sanitized test data.<br>• Per-instance ownership and scoped execution/cleanup.<br>• Expiry, extensions, evidence retention and failure support.","decision")
+card(f,"c-decisions",1656,1200,1432,224,
+     "• Shared infrastructure or dedicated project/cluster per need?<br>• Which dependencies are shared versus owned by each lab?<br>• Workflow/button or direct CLI, and who authorizes execution?<br>• Which profiles, tests, counts and lifecycle rules are required?", "decision")
+card(f,"c-boundaries",64,1504,3024,160,
+     "<b>Keep the handoffs and claims explicit</b><br>Provisioning exercises infrastructure code; it does not by itself prove production disaster recovery. Choose recovery tests against agreed criteria.<br>Consume approved artifacts from 03/04, use 01 execution controls, and coordinate release policy with 11. Existing shared environments are context; no new lab count or date is committed.","context")
+text(f,"c-evidence",64,1810,3024,
+     "Basis: Nov 12 meeting intent and saved environment/Terraform/GitOps explanations. Infrastructure coverage, current access, QA data policy and operation owners must be confirmed before implementation.",18)
+
+ids={e.get('id'):e for e in svg.iter() if e.get('id')}
+assert len(ids)==sum(bool(e.get('id')) for e in svg.iter()) and len(svg)==3
+for f in svg:
+    for e in f:
+        if e.get('data-start'):
+            assert e.get('data-start') in ids and e.get('data-end') in ids
+        elif e.get('x') is not None:
+            assert 0<=float(e.get('x')) and 0<=float(e.get('y'))
+            assert float(e.get('x'))+float(e.get('width',0))<=3152
+            assert float(e.get('y'))+float(e.get('height',0))<=1910
+assert not any(e.tag.endswith(('image','foreignObject')) for e in svg.iter())
+E.indent(svg)
+E.ElementTree(svg).write(P/'proposal-05.canvas.svg',encoding='utf-8',xml_declaration=True)
+print(f'Built 3 frames and {len(ids)} native widgets; bounds and connector references checked.')

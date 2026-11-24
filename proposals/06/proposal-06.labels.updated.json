@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "message": "Applied diff: 0 created, 2 updated. result_svg leaves out each body you hold: one that landed exactly as you sent it, or one you changed with <edit>",
+  "created_count": 0,
+  "updated_count": 2,
+  "deleted_count": 0,
+  "failed_items": [],
+  "skipped": [],
+  "result_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\"><textArea id=\"b-role-author\" data-miro-id=\"3458764690590495840\" data-rendered-bounds=\"1363 19075 256 51\" /><textArea id=\"b-role-publish\" data-miro-id=\"3458764690590495842\" data-rendered-bounds=\"1363 19363 256 26\" /></svg>",
+  "miro_url": "https://miro.com/app/board/uXjVEOGaQYU=/"
+}

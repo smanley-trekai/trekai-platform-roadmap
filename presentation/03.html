@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="TrekAI topic 03: the current Terraform process, proposed improvements and implementation plan.">
+<title>03 — Terraform deployment automation</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#17283d;background:#20242a;color-scheme:light;--blue:#20569c;--navy:#153452;--gray:#526171;--line:#d4dce5;--light:#edf3fa;--orange:#a35b13}
+*{box-sizing:border-box}body{margin:0;overflow:hidden}button{font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #72adf2;outline-offset:4px}.viewport{height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px 24px 70px}.frame{position:relative;flex:none;box-shadow:0 15px 55px #0004}.deck{position:absolute;top:0;left:0;width:1600px;height:900px;transform-origin:top left;background:#fff;overflow:hidden;cursor:default}.slide{position:absolute;inset:0;display:none;overflow:hidden;background:white;padding:72px 92px 74px}.slide.active{display:flex;flex-direction:column;animation:slide-in .35s ease-out}.slide h1,.slide h2,.slide h3,.slide p{margin:0}.slide h1{font-size:82px;line-height:1.13;letter-spacing:-2px;color:var(--navy);font-weight:600}.slide h2{font-size:55px;line-height:1.16;font-weight:600;letter-spacing:-1.2px;color:var(--navy);margin-bottom:42px}.slide h3{font-size:31px;line-height:1.25;color:var(--navy);font-weight:600}.body{font-size:30px;line-height:1.4;flex:1;min-height:0}.subtitle{font-size:32px;line-height:1.45;color:var(--gray)}.muted{color:var(--gray)}.slide-footer{position:absolute;left:92px;right:92px;bottom:30px;display:flex;justify-content:space-between;color:#73808c;font-size:18px;line-height:1}.slide-footer::before{content:"";position:absolute;top:-19px;left:0;right:0;height:1px;background:#e2e7ec}.slide-label{font-size:24px;color:var(--gray);margin-bottom:35px}.title-slide{justify-content:center}.title-slide h1{max-width:1250px;margin-bottom:34px}.title-slide .subtitle{font-size:36px;max-width:1200px}.title-slide .proposal{margin-top:68px;font-size:24px;color:var(--gray)}.title-slide::before{content:"";position:absolute;left:0;top:0;bottom:0;width:20px;background:var(--blue)}
+.bullets{margin:0;padding-left:34px}.bullets li{padding-left:8px;margin-bottom:33px;font-size:34px;line-height:1.42;max-width:1290px}.bullets li::marker{color:var(--blue)}.bullets strong{font-weight:600}.body p.lead{font-size:32px;line-height:1.45;margin-bottom:33px;max-width:1340px}.body p.detail{font-size:28px;line-height:1.5;max-width:1340px;color:var(--gray)}.statement{font-size:31px;line-height:1.45;border-left:5px solid var(--blue);padding:9px 0 9px 26px;margin-top:34px;max-width:1350px}.statement strong{font-weight:600;color:var(--navy)}
+.flow{display:flex;align-items:stretch;margin:28px 0 37px;gap:0;min-height:205px}.node{flex:1;position:relative;min-width:0;border:2px solid #b4c7dd;background:#f2f6fb;padding:28px 22px 24px;display:flex;flex-direction:column;justify-content:center}.node strong{font-weight:600;font-size:31px;line-height:1.22;color:var(--navy)}.node p{font-size:24px;line-height:1.35;margin-top:15px;color:var(--gray)}.node .step-no{font-size:20px;color:var(--blue);margin-bottom:18px}.node.final{background:#e5edf8;border-color:var(--blue)}.node.gate{background:#faf3e8;border-color:#d5bb91}.connector{display:flex;align-items:center;justify-content:center;width:54px;flex:none;color:#7791ac;font-size:35px}.connector svg{width:43px;height:30px}.flow.current .node{background:#f5f6f7;border-color:#c8d0d8}.flow.current .node.final{border-style:dashed;background:white}.flow.current .node strong{font-size:29px}.flow-label{font-size:24px;color:var(--gray);margin-bottom:16px}.two-text{display:grid;grid-template-columns:1fr 1fr;gap:75px;margin-top:30px}.two-text h3{margin-bottom:17px}.two-text p{font-size:29px;line-height:1.45;color:var(--gray)}.environment-flow{display:flex;gap:0;align-items:center;margin:15px 0 42px}.environment{flex:1;padding:28px 0;border-top:4px solid var(--blue)}.environment h3{font-size:39px;margin-bottom:18px}.environment p{font-size:27px;color:var(--gray);line-height:1.5}.environment-flow .connector{width:90px}.environment-flow .connector svg{width:55px}.environment .step-no{font-size:23px;color:var(--blue);margin-bottom:17px}.body .wide-note{font-size:28px;line-height:1.4;margin-top:28px;color:var(--gray)}
+.table{border-collapse:collapse;width:100%;text-align:left;table-layout:fixed;font-size:28px;line-height:1.35}.table th{padding:17px 24px;background:var(--navy);color:white;font-size:26px;font-weight:500;vertical-align:top}.table td{padding:23px 24px;border-bottom:1px solid var(--line);vertical-align:top}.table tbody tr:nth-child(even){background:#f3f6fa}.table td:first-child{font-weight:600;color:var(--navy)}.table small{display:block;font-size:23px;line-height:1.4;color:var(--gray);font-weight:400;margin-top:10px}.table.approvals td{padding-top:30px;padding-bottom:30px}.table.tests td,.table.failures td{padding-top:20px;padding-bottom:20px}.table.rollout td{padding:18px 22px;font-size:27px}.table.rollout th{font-size:24px}.table.rollout td:first-child{font-size:28px}.question-list{list-style:none;padding:0;margin:0;counter-reset:question}.question-list li{counter-increment:question;padding:25px 0 25px 75px;position:relative;border-top:1px solid var(--line);font-size:32px;line-height:1.4}.question-list li::before{content:counter(question) ".";position:absolute;left:4px;top:25px;font-size:31px;font-weight:600;color:var(--blue)}.question-list li:last-child{border-bottom:1px solid var(--line)}.body .end-note{font-size:29px;color:var(--blue);margin-top:36px;line-height:1.4}
+/* Each advance reveals one point, as in a slide presentation. */
+[data-build]{opacity:0;transform:translateY(11px);transition:opacity .35s ease-out,transform .35s ease-out}[data-build].shown{opacity:1;transform:none}.node[data-build].shown{border-color:#8daacb}.node.final[data-build].shown{border-color:var(--blue)}.node.gate[data-build].shown{border-color:#d5bb91}.slide.build-complete [data-build]{opacity:1;transform:none}
+.controls{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);height:36px;display:flex;align-items:center;gap:16px;color:#d2d8df;font-size:13px;z-index:20}.controls button{border:0;background:transparent;color:inherit;padding:5px 8px;font-size:22px;line-height:1}.controls button:disabled{opacity:.3;cursor:default}.controls .count{font-size:13px;min-width:53px;text-align:center;font-variant-numeric:tabular-nums}.controls .fullscreen{font-size:16px;margin-left:5px}.help{position:fixed;bottom:25px;right:26px;color:#aeb7c2;font-size:12px;z-index:20}.build-hint{position:fixed;left:26px;bottom:25px;color:#aeb7c2;font-size:12px;z-index:20}.a11y-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.help-panel{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);padding:22px 28px;background:#fff;color:#26364a;font-size:16px;line-height:1.8;z-index:30;box-shadow:0 6px 30px #0005;border:1px solid #c9d4e0}.help-panel[hidden]{display:none}.help-panel strong{font-size:18px}.help-button{font-size:16px!important}.noscript{position:fixed;top:0;left:0;right:0;padding:18px;background:white;z-index:100;color:#17283d}
+@keyframes slide-in{from{opacity:0}to{opacity:1}}
+@media(max-width:750px){.viewport{padding:12px 8px 65px}.help{display:none}.build-hint{left:12px;bottom:57px;font-size:10px}.controls{gap:11px}.slide{touch-action:pan-y}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}[data-build]{transform:none}}
+@media print{@page{size:1600px 900px;margin:0}html,body{width:1600px;height:auto;background:#fff;overflow:visible;-webkit-print-color-adjust:exact;print-color-adjust:exact}.viewport{display:block;height:auto;padding:0}.frame{width:1600px!important;height:auto!important;box-shadow:none}.deck{position:static;transform:none!important;height:auto;overflow:visible}.slide,.slide.active{display:flex!important;position:relative;inset:auto;width:1600px;height:900px;break-after:page;animation:none!important}.slide:last-child{break-after:auto}[data-build]{opacity:1!important;transform:none!important}.controls,.help,.build-hint,.help-panel,.a11y-status{display:none!important}}
+</style>
+</head>
+<body>
+<noscript><div class="noscript">Enable JavaScript to view this presentation.</div></noscript>
+<main class="viewport" aria-label="Terraform deployment automation presentation">
+<div class="frame" id="frame"><div class="deck" id="deck">
+<section class="slide title-slide active" aria-labelledby="title1" data-title="Terraform deployment automation">
+  <div class="slide-label">TrekAI</div>
+  <h1 id="title1">Terraform deployment<br>automation</h1>
+  <p class="subtitle">Current process, proposed improvements<br>and implementation plan</p>
+  <p class="proposal">Topic 03</p>
+</section>
+<section class="slide" aria-labelledby="title2" data-title="Current process">
+  <h2 id="title2">Current process</h2>
+  <div class="body">
+    <p class="lead">We already use GitHub Actions to preview some infrastructure changes.</p>
+    <div class="flow current" aria-label="Current Terraform process">
+      <div class="node" data-build="1"><strong>Open a pull<br>request (PR)</strong><p>Submit the code to<br>main or preston.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="node" data-build="2"><strong>Run checks<br>and a plan</strong><p>GitHub Actions shows<br>the proposed changes.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="node" data-build="3"><strong>Review the PR</strong><p>The team reviews<br>the code and plan.</p></div>
+      <div class="connector" data-build="4" aria-hidden="true">→</div>
+      <div class="node final" data-build="4"><strong>Run apply<br>separately</strong><p>The PR workflow<br>does not run apply.</p></div>
+    </div>
+    <p class="detail" data-build="5">Automatic plans currently cover changes in development folders.<br>We need to extend coverage to staging, production and affected shared code.</p>
+    <div class="statement" data-build="6"><strong>Plan</strong> shows what will change. <strong>Apply</strong> makes the change.</div>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title3" data-title="Proposed improvements">
+  <h2 id="title3">Proposed improvements</h2>
+  <div class="body">
+    <ul class="bullets">
+      <li data-build="1">Show a plan for every infrastructure component affected by a change.</li>
+      <li data-build="2">Use GitHub Actions to run the approved infrastructure changes.</li>
+      <li data-build="3">Agree who reviews the code and who approves deployment<br>to each environment.</li>
+      <li data-build="4">Test the result before moving the change to the next environment.</li>
+    </ul>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title4" data-title="Before the code is merged">
+  <h2 id="title4">Before the code is merged</h2>
+  <div class="body">
+    <div class="flow" aria-label="Proposed process before merge">
+      <div class="node" data-build="1"><span class="step-no">1</span><strong>Change the code</strong><p>The developer updates<br>the Terraform code.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="node" data-build="2"><span class="step-no">2</span><strong>Open a PR</strong><p>Explain the change<br>and what it should do.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="node" data-build="3"><span class="step-no">3</span><strong>Run checks<br>and plans</strong><p>GitHub Actions checks<br>the affected code.</p></div>
+      <div class="connector" data-build="4" aria-hidden="true">→</div>
+      <div class="node final" data-build="4"><span class="step-no">4</span><strong>Review<br>and merge</strong><p>A reviewer approves<br>the code and plans.</p></div>
+    </div>
+    <div class="two-text">
+      <div data-build="5"><h3>What the reviewer sees</h3><p>The code change, the check results,<br>and what Terraform will create, change or remove.</p></div>
+      <div data-build="6"><h3>If checks fail or changes are requested</h3><p>The developer updates the PR.<br>The checks and review run again.</p></div>
+    </div>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title5" data-title="After the code is merged">
+  <h2 id="title5">After the code is merged</h2>
+  <div class="body">
+    <div class="flow" aria-label="Proposed process after merge">
+      <div class="node" data-build="1"><span class="step-no">1</span><strong>Run a final plan</strong><p>Use the merged code<br>and the selected<br>environment.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="node gate" data-build="2"><span class="step-no">2</span><strong>Approve<br>the apply</strong><p>Follow the approval<br>rules for that<br>environment.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="node" data-build="3"><span class="step-no">3</span><strong>Apply the plan</strong><p>GitHub Actions runs<br>the exact plan<br>approved for this target.</p></div>
+      <div class="connector" data-build="4" aria-hidden="true">→</div>
+      <div class="node final" data-build="4"><span class="step-no">4</span><strong>Test the result</strong><p>Check the infrastructure<br>and the required<br>application behavior.</p></div>
+    </div>
+    <p class="lead" data-build="5">We run a new plan after merge because the code or infrastructure<br>may have changed since the PR plan.</p>
+    <div class="statement" data-build="6">A successful apply means Terraform finished.<br>Testing confirms the change works as expected.</div>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title6" data-title="Who approves what">
+  <h2 id="title6">Who approves what</h2>
+  <div class="body">
+    <table class="table approvals">
+      <colgroup><col style="width:25%"><col style="width:42%"><col style="width:33%"></colgroup>
+      <thead><tr><th>Decision</th><th>What the person approves</th><th>Who needs to be assigned</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>PR approval</td><td>The code and the changes shown in the preview plans.</td><td>The required code reviewers.</td></tr>
+        <tr data-build="2"><td>Apply approval</td><td>The final plan for the selected environment.</td><td>The people allowed to approve infrastructure changes.</td></tr>
+        <tr data-build="3"><td>Test acceptance</td><td>The test results before the change moves to the next environment.</td><td>The person responsible for the service or its testing.</td></tr>
+      </tbody>
+    </table>
+    <p class="wide-note" data-build="4">Proposal: require final-plan approval for staging and production.<br>The team will decide whether development needs approval or can apply automatically.</p>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title7" data-title="Moving changes between environments">
+  <h2 id="title7">Moving changes between environments</h2>
+  <div class="body">
+    <div class="environment-flow" aria-label="Development, staging and production">
+      <div class="environment" data-build="1"><div class="step-no">1</div><h3>Development</h3><p>Apply the change.<br>Run the agreed tests.</p></div>
+      <div class="connector" data-build="2" aria-hidden="true">→</div>
+      <div class="environment" data-build="2"><div class="step-no">2</div><h3>Staging</h3><p>Plan for staging.<br>Approve, apply and test.</p></div>
+      <div class="connector" data-build="3" aria-hidden="true">→</div>
+      <div class="environment" data-build="3"><div class="step-no">3</div><h3>Production</h3><p>Plan for production.<br>Approve, apply and test.</p></div>
+    </div>
+    <p class="lead" data-build="4">After tests pass, update the next environment to use the tested code<br>or shared module version. Generate a new plan for that environment.</p>
+    <p class="detail" data-build="5">Main holds the reviewed code. The Terraform folder, settings and state<br>determine which environment changes.</p>
+    <div class="statement" data-build="6">Every environment needs its own plan.<br>A development plan cannot be used for production.</div>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title8" data-title="How we test the change">
+  <h2 id="title8">How we test the change</h2>
+  <div class="body">
+    <p class="lead">Choose the tests based on what the change is supposed to do.</p>
+    <table class="table tests">
+      <colgroup><col style="width:23%"><col style="width:37%"><col style="width:40%"></colgroup>
+      <thead><tr><th>Example</th><th>Before apply</th><th>After apply</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>Database</td><td>Review the database settings<br>and connection setup.</td><td>Confirm the settings and check<br>that the application can connect.</td></tr>
+        <tr data-build="2"><td>Access</td><td>Review who should have access<br>and what they can do.</td><td>Check that allowed access works<br>and unauthorized access fails.</td></tr>
+        <tr data-build="3"><td>Backups</td><td>Agree the backup settings<br>and recovery requirements.</td><td>Check backups and test a restore<br>when the change requires it.</td></tr>
+        <tr data-build="4"><td>Capacity</td><td>Agree the expected workload<br>and performance targets.</td><td>Run the agreed load test<br>and check the results.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title9" data-title="When something goes wrong">
+  <h2 id="title9">When something goes wrong</h2>
+  <div class="body">
+    <table class="table failures">
+      <colgroup><col style="width:37%"><col style="width:63%"></colgroup>
+      <thead><tr><th>What happens</th><th>What we do next</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>PR checks fail</td><td>The developer fixes the code. Run the checks again<br>before approving the PR.</td></tr>
+        <tr data-build="2"><td>The final plan changes<br>or approval is denied</td><td>Stop the apply. Resolve the issue, create a new plan<br>if needed, and obtain approval again.</td></tr>
+        <tr data-build="3"><td>Apply fails</td><td>DevOps checks what changed and plans the fix.<br>Review the fix before running it.</td></tr>
+        <tr data-build="4"><td>Tests fail</td><td>Hold the change in the current environment.<br>Fix it and test again before moving forward.</td></tr>
+      </tbody>
+    </table>
+    <p class="wide-note" data-build="5">Run only one apply at a time for the same Terraform state.</p>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title10" data-title="Implementation plan">
+  <h2 id="title10">Implementation plan</h2>
+  <div class="body">
+    <table class="table rollout">
+      <colgroup><col style="width:25%"><col style="width:43%"><col style="width:32%"></colgroup>
+      <thead><tr><th>Phase</th><th>Work to complete</th><th>Ready to continue when</th></tr></thead>
+      <tbody>
+        <tr data-build="1"><td>1. Review the setup</td><td>DevOps checks the existing workflows,<br>permissions and current apply process.</td><td>We know what needs to change<br>and who owns each step.</td></tr>
+        <tr data-build="2"><td>2. Agree the process</td><td>The team chooses the first development<br>scope, reviewers, approvals and tests.</td><td>Owners and approval rules<br>are clear.</td></tr>
+        <tr data-build="3"><td>3. Build in development</td><td>DevOps adds the workflow.<br>The team tests successful changes,<br>blocked changes and failures.</td><td>Planning, approval, apply<br>and testing work as agreed.</td></tr>
+        <tr data-build="4"><td>4. Extend the workflow</td><td>Add staging, then production.<br>Give each its own plan, permissions<br>and approval rules.</td><td>The team accepts the process<br>for each environment.</td></tr>
+      </tbody>
+    </table>
+    <p class="wide-note" data-build="5">Agree the scope and owners first. Set dates once the work is understood.</p>
+  </div>
+</section>
+<section class="slide" aria-labelledby="title11" data-title="Decisions needed from the team">
+  <h2 id="title11">Decisions needed from the team</h2>
+  <div class="body">
+    <ol class="question-list">
+      <li data-build="1">Which development infrastructure should we use for the first rollout?</li>
+      <li data-build="2">Who reviews PRs, approves applies and accepts test results?</li>
+      <li data-build="3">Should development apply automatically after merge,<br>or should someone approve it?</li>
+      <li data-build="4">Which tests must pass before we move to staging and production?</li>
+    </ol>
+    <p class="end-note" data-build="5">Next step: agree the development rollout, assign owners and begin the setup review.</p>
+  </div>
+</section>
+</div></div>
+</main>
+<nav class="controls" aria-label="Presentation controls">
+<button id="prev" aria-label="Previous point or slide" title="Previous (←)">‹</button>
+<span class="count" id="counter">01 / 11</span>
+<button id="next" aria-label="Next point or slide" title="Next (→ or Space)">›</button>
+<button class="fullscreen" id="fullscreen" aria-label="Enter fullscreen" title="Fullscreen (F)">⛶</button>
+<button class="help-button" id="helpButton" aria-label="Show presentation shortcuts" aria-expanded="false" title="Shortcuts (?)">?</button>
+</nav>
+<div class="build-hint" id="buildHint">Click or press → to continue</div>
+<div class="help">← → Navigate &nbsp; Space Continue &nbsp; F Fullscreen</div>
+<aside class="help-panel" id="helpPanel" hidden><strong>Presentation controls</strong><br>Click, → or Space: reveal the next point<br>←: go back one point<br>Page Down / Page Up: next / previous slide<br>Home / End: first / last slide<br>A: show the complete slide<br>R: replay the current slide<br>F: fullscreen &nbsp; Esc: close help</aside>
+<div class="a11y-status" id="status" aria-live="polite"></div>
+<script>
+(()=>{'use strict';
+const slides=[...document.querySelectorAll('.slide')],deck=document.getElementById('deck'),frame=document.getElementById('frame');
+const prev=document.getElementById('prev'),next=document.getElementById('next'),counter=document.getElementById('counter'),hint=document.getElementById('buildHint'),status=document.getElementById('status');
+const helpPanel=document.getElementById('helpPanel'),helpButton=document.getElementById('helpButton');
+let index=0,build=0,touch=null,scale=1;
+const maxBuild=()=>Math.max(0,...[...slides[index].querySelectorAll('[data-build]')].map(e=>Number(e.dataset.build)));
+function resize(){const availableW=Math.max(100,window.innerWidth-(window.innerWidth<=750?16:48));const availableH=Math.max(100,window.innerHeight-(window.innerWidth<=750?77:94));scale=Math.min(availableW/1600,availableH/900);frame.style.width=1600*scale+'px';frame.style.height=900*scale+'px';deck.style.transform=`scale(${scale})`;}
+function update(){slides.forEach((slide,i)=>{const active=i===index;slide.classList.toggle('active',active);slide.setAttribute('aria-hidden',String(!active));slide.inert=!active;if(active){slide.classList.toggle('build-complete',build===maxBuild());slide.querySelectorAll('[data-build]').forEach(el=>{const shown=Number(el.dataset.build)<=build;el.classList.toggle('shown',shown);el.setAttribute('aria-hidden',String(!shown));})}});counter.textContent=`${String(index+1).padStart(2,'0')} / ${slides.length}`;prev.disabled=index===0&&build===0;next.disabled=index===slides.length-1&&build===maxBuild();hint.textContent=build<maxBuild()?'Click or press → to show the next point':index<slides.length-1?'Click or press → for the next slide':'End of presentation';status.textContent=`Slide ${index+1}: ${slides[index].dataset.title}${maxBuild()?`, point ${build} of ${maxBuild()}`:''}`;document.title=`03 — ${slides[index].dataset.title}`;try{history.replaceState(null,'',`#slide-${index+1}`)}catch{}}
+function go(i,complete=false){index=Math.max(0,Math.min(slides.length-1,i));build=complete?maxBuild():0;update();}
+function forward(){if(build<maxBuild()){build++;update()}else if(index<slides.length-1)go(index+1);}
+function back(){if(build>0){build--;update()}else if(index>0)go(index-1,true);}
+function toggleHelp(){helpPanel.hidden=!helpPanel.hidden;helpButton.setAttribute('aria-expanded',String(!helpPanel.hidden));}
+async function fullscreen(){try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else{helpPanel.hidden=false;helpButton.setAttribute('aria-expanded','true');}}catch{helpPanel.hidden=false;helpButton.setAttribute('aria-expanded','true');}}
+prev.addEventListener('click',back);next.addEventListener('click',forward);document.getElementById('fullscreen').addEventListener('click',fullscreen);helpButton.addEventListener('click',toggleHelp);
+deck.addEventListener('click',()=>{if(!helpPanel.hidden){helpPanel.hidden=true;helpButton.setAttribute('aria-expanded','false');return;}forward();});
+document.addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;if(e.key==='Escape'){helpPanel.hidden=true;helpButton.setAttribute('aria-expanded','false');return;}if(e.key==='?'||e.key.toLowerCase()==='h'){e.preventDefault();toggleHelp();return;}if(!helpPanel.hidden)return;if(e.key==='ArrowRight'||e.key==='ArrowDown'||(e.key===' '&&!e.target.closest('button'))||e.key==='Enter'&&e.target===document.body){e.preventDefault();forward();}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();back();}else if(e.key==='PageDown'){e.preventDefault();go(index+1);}else if(e.key==='PageUp'){e.preventDefault();go(index-1);}else if(e.key==='Home'){e.preventDefault();go(0);}else if(e.key==='End'){e.preventDefault();go(slides.length-1,true);}else if(e.key.toLowerCase()==='a'){build=maxBuild();update();}else if(e.key.toLowerCase()==='r'){build=0;update();}else if(e.key.toLowerCase()==='f'){e.preventDefault();fullscreen();}});
+deck.addEventListener('touchstart',e=>{touch=[e.changedTouches[0].clientX,e.changedTouches[0].clientY];},{passive:true});deck.addEventListener('touchend',e=>{if(!touch)return;const dx=e.changedTouches[0].clientX-touch[0],dy=e.changedTouches[0].clientY-touch[1];if(Math.abs(dx)>60&&Math.abs(dy)<40){e.preventDefault();dx<0?forward():back();}touch=null;},{passive:false});
+document.addEventListener('fullscreenchange',()=>document.getElementById('fullscreen').setAttribute('aria-label',document.fullscreenElement?'Exit fullscreen':'Enter fullscreen'));
+window.addEventListener('resize',resize);window.addEventListener('hashchange',()=>{const m=location.hash.match(/^#slide-(\d+)$/);if(m&&Number(m[1])-1!==index)go(Number(m[1])-1);});
+slides.forEach((slide,i)=>{const footer=document.createElement('footer');footer.className='slide-footer';const brand=document.createElement('span');brand.textContent='TrekAI';const num=document.createElement('span');num.textContent=String(i+1);footer.append(brand,num);slide.append(footer);});
+const start=location.hash.match(/^#slide-(\d+)$/);resize();go(start?Number(start[1])-1:0);
+})();
+</script>
+</body>
+</html>
