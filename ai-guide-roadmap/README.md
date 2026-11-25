@@ -18,3 +18,5 @@
 | Is this skill, MCP connection or plugin safe, and does it actually help? | [Capability audit and evaluation](docs/capability-audit-and-evaluation.md) |
 | How do I run Claude Code, Codex, or ThinkRail in Docker with a private project clone and read-only 2nd Brain context? | [Local development and DevOps sandbox setup](sanboxing/README.md) |
 | Which interface fits my ticket or parallel tasks? | [Pros and cons of Claude Code, Codex, VS Code, and ThinkRail](sanboxing/README.md#claude-code-codex-vs-code-or-thinkrail) |
+| Which multi-agent workspace is open source or free, and how popular is it? | [Agent tooling comparison](tooling/README.md) |
+| How do I install T3 Code and run agents in parallel worktrees? | [T3 Code setup guide](tooling/t3-code-setup.md) |

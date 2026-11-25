@@ -1,0 +1,2 @@
+- vs code agent mode gives the flexibility to switch tasks and work with different projects in one screen. (Similar to thinkrail)
+but without the git worktree
