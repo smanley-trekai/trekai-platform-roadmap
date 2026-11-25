@@ -530,3 +530,14 @@ Current next step (2026-11-16): review Proposal 11, GitOps / SDLC, then consolid
 - Reduced agenda row spacing to accommodate the ninth entry and kept progressive reveals contiguous. External-link clicks return before the deck-advance handler, preserving the Topics slide while the separate presentation opens.
 - Updated the presentation README, repository navigation, topic mapping and design-plan scope note. The AI guide roadmap stays a separate learning resource; no Miro diagrams or platform proposal content changed.
 - Prepared and checked in a staged copy because the target repository is outside the active session’s writable workspace. Apply the reviewed patch from an authorized workspace, then verify the target presentation.
+
+## ThinkRail and Docker sandbox setup guide — 2026-11-25
+
+- Added a [setup guide](ai-guide-roadmap/sanboxing/README.md) for a private project clone, ThinkRail worktrees, and a read-only selection from the confidential TrekAI 2nd Brain. Linked it from the AI guide index and saved discussion.
+- Included software and DevOps ticket examples, live-access boundaries, a first-session smoke test, and instructions for fetching a review branch while preserving local edits.
+- Checked the shell examples and local navigation. Rehearsed the context export against the local 2nd Brain and matched both files to their recorded Git revision. The remaining runtime check is to start the combined setup and verify the mount flags, model connection, and branch handoff on a machine with `sbx`.
+
+- Added direct Claude Code and Codex launch paths, authentication options, and Docker launcher permission defaults to the sandboxing guide and saved discussion. Both paths use the existing context export and branch-review workflow. The shell examples and local links were checked. Live CLI launches remain unverified here.
+- Added a sourced comparison of native Codex and Claude Code controls, Docker Sandboxes, conventional dev containers, and remote VMs or Codespaces. Compared local edits, disclosure of readable context, and live DevOps access. Verified local links, shell syntax, and argument expansion for both direct launch examples.
+- Added and linked a four-way interface comparison covering Claude Code, Codex, VS Code over Remote – SSH, and ThinkRail with Pi. Checked the index anchor and each option’s benefits and tradeoffs.
+- Documented when each interface creates a linked worktree, VS Code’s remembered isolation choice, and how to run parallel tasks inside a Docker clone. Confirmed both worktree flags against the locally installed CLIs and checked VS Code’s published defaults.

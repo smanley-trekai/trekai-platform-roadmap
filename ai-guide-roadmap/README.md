@@ -16,3 +16,5 @@
 | Why have the agent inspect, plan and test? | [AI workflow guide](docs/ai-workflow-guide.md) |
 | Where do project instructions, settings and skills go? | [Codex and Claude Code folder guide](docs/codex-and-claude-folder-structure.md) |
 | Is this skill, MCP connection or plugin safe, and does it actually help? | [Capability audit and evaluation](docs/capability-audit-and-evaluation.md) |
+| How do I run Claude Code, Codex, or ThinkRail in Docker with a private project clone and read-only 2nd Brain context? | [Local development and DevOps sandbox setup](sanboxing/README.md) |
+| Which interface fits my ticket or parallel tasks? | [Pros and cons of Claude Code, Codex, VS Code, and ThinkRail](sanboxing/README.md#claude-code-codex-vs-code-or-thinkrail) |
